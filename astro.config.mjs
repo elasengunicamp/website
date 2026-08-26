@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 
+import react from '@astrojs/react';
+
 // https://astro.build/config
 export default defineConfig({
   // TODO: update once domain is finalized (elasnaengenharia.fem.unicamp.br vs registro.br)
@@ -13,5 +15,5 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [sitemap(), mdx()]
+  integrations: [sitemap(), mdx(), react()]
 });

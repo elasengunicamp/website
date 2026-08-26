@@ -1,0 +1,119 @@
+# Config do Sveltia CMS (compatível com o formato Decap/Netlify CMS).
+# Backend: GitHub direto no repo. OAuth via proxy Cloudflare Worker separado
+# (sveltia-cms-auth) — ver PROJECT-NOTES.md pra status do deploy do proxy.
+backend:
+  name: github
+  repo: elasengunicamp/website
+  branch: main
+
+publish_mode: editorial_workflow
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+locale: pt
+
+collections:
+  - name: areas
+    label: Áreas de atuação
+    folder: src/content/areas
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Nome, name: nome, widget: string }
+      - { label: Descrição, name: descricao, widget: text }
+      - label: Cor de destaque
+        name: accentToken
+        widget: select
+        options: [blue, teal, pink, purple, yellow, rose]
+        default: purple
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+
+  - name: membros
+    label: Membros
+    folder: src/content/membros
+    create: true
+    fields:
+      - { label: Nome, name: nome, widget: string }
+      - label: Área
+        name: area
+        widget: relation
+        collection: areas
+        search_fields: [nome]
+        value_field: "{{slug}}"
+        display_fields: [nome]
+      - { label: Curso, name: curso, widget: string, required: false }
+      - { label: Cargo, name: cargo, widget: string, required: false }
+      - { label: Foto, name: foto, widget: image }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+
+  - name: acoes
+    label: Ações
+    folder: src/content/acoes
+    create: true
+    fields:
+      - { label: Título, name: titulo, widget: string }
+      - { label: Data, name: data, widget: datetime }
+      - { label: Descrição, name: descricao, widget: text }
+      - { label: Capa, name: cover, widget: image }
+      - label: Galeria
+        name: galeria
+        widget: list
+        field: { label: Imagem, name: image, widget: image }
+        default: []
+      - { label: Tags, name: tags, widget: list, default: [] }
+      - { label: Corpo, name: body, widget: markdown, required: false }
+
+  - name: parceiros
+    label: Parcerias
+    folder: src/content/parceiros
+    create: true
+    fields:
+      - { label: Nome, name: nome, widget: string }
+      - { label: Logo, name: logo, widget: image }
+      - { label: Sobre, name: sobre, widget: text }
+      - { label: Link, name: link, widget: string }
+      - { label: Categoria, name: categoria, widget: string, required: false }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+
+  - name: pesquisa
+    label: "Pesquisa / Elas indica"
+    folder: src/content/pesquisa
+    create: true
+    fields:
+      - { label: Título, name: titulo, widget: string }
+      - { label: Autores, name: autores, widget: list }
+      - { label: "Revista/Evento", name: revistaOuEvento, widget: string, required: false }
+      - { label: DOI, name: doi, widget: string, required: false }
+      - { label: Data, name: data, widget: datetime }
+      - { label: Resumo, name: resumo, widget: text }
+      - { label: Link, name: link, widget: string, required: false }
+
+  - name: blog
+    label: Blog
+    folder: src/content/blog
+    create: true
+    fields:
+      - { label: Título, name: titulo, widget: string }
+      - { label: Data, name: data, widget: datetime }
+      - { label: Autor, name: autor, widget: string }
+      - { label: Capa, name: cover, widget: image }
+      - { label: Resumo, name: resumo, widget: text }
+      - { label: Tags, name: tags, widget: list, default: [] }
+      - { label: Corpo, name: body, widget: markdown }
+
+  - name: escolas-videos
+    label: "Escolas — Vídeos"
+    folder: src/content/escolas-videos
+    create: true
+    fields:
+      - { label: Título, name: titulo, widget: string }
+      - { label: "URL do vídeo (embed)", name: embedUrl, widget: string }
+      - { label: Descrição, name: descricao, widget: text }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+
+# Coleção "metricas" fica de fora do painel visual por ora: o arquivo
+# src/content/metricas/metricas.yaml é uma lista no nível raiz (formato mais
+# simples pro loader file() do Astro), e o formato de "files collection" do
+# Sveltia pra arquivo-raiz-lista precisa ser confirmado/testado antes de
+# expor no CMS. Editar via PR direto até essa decisão (ver PROJECT-NOTES.md).

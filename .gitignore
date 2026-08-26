@@ -20,5 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# arquivo-fonte dos gráficos (já extraído em public/graphics/) — binário grande,
+# não deveria ir pro build nem inchar o histórico do git. Ver PROJECT-NOTES.md.
+design-source/
+
 # jetbrains setting folder
 .idea/

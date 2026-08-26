@@ -1,0 +1,61 @@
+---
+// Meter — forma escolhida via skill "dataviz" pra "um valor único contra um
+// limite" (ex.: % de participação feminina). Preenchimento = tom cheio do
+// acento; trilho não preenchido = tom mais claro do MESMO acento (não uma
+// cor diferente), pra ler como "estado" de ponta a ponta. Nunca cor sozinha:
+// o percentual é sempre escrito por extenso ao lado.
+export type AccentToken = 'blue' | 'teal' | 'pink' | 'purple' | 'yellow' | 'rose';
+
+export interface Props {
+  label: string;
+  // undefined = métrica ainda não medida ("sem dado ainda"); 0 é um valor
+  // real e deve render como 0%, não como sentinela (achado de code review).
+  valor: number | undefined; // percentual, 0–100
+  ano?: number;
+  accent?: AccentToken;
+}
+
+const { label, valor, ano, accent = 'purple' } = Astro.props;
+const semDado = valor === undefined;
+const pct = semDado ? 0 : Math.max(0, Math.min(100, valor));
+
+const trackClasses: Record<AccentToken, string> = {
+  blue: 'bg-accent-blue/15',
+  teal: 'bg-accent-teal/15',
+  pink: 'bg-accent-pink/30',
+  purple: 'bg-accent-purple/15',
+  yellow: 'bg-accent-yellow/30',
+  rose: 'bg-accent-rose/15',
+};
+const fillClasses: Record<AccentToken, string> = {
+  blue: 'bg-accent-blue',
+  teal: 'bg-accent-teal',
+  pink: 'bg-accent-rose',
+  purple: 'bg-accent-purple',
+  yellow: 'bg-accent-purple',
+  rose: 'bg-accent-rose',
+};
+---
+
+<div class="rounded-2xl border border-brand/10 bg-white p-5 shadow-sm dark:border-brand-lilac/10 dark:bg-brand-dark-surface">
+  <div class="flex items-baseline justify-between gap-2">
+    <p class="font-body text-sm font-semibold text-ink-heading dark:text-ink-dark-heading">{label}</p>
+    {ano && <span class="font-mono text-[11px] text-ink/50 dark:text-ink-dark/50">{ano}</span>}
+  </div>
+
+  <div class:list={['mt-3 h-3 w-full overflow-hidden rounded-full', trackClasses[accent]]}>
+    {!semDado && (
+      <div
+        class:list={['h-full rounded-full', fillClasses[accent]]}
+        style={{ width: `${pct}%` }}
+      >
+      </div>
+    )}
+  </div>
+
+  {semDado ? (
+    <p class="mt-2 font-body text-xs text-ink/50 dark:text-ink-dark/50">Sem dado ainda</p>
+  ) : (
+    <p class="mt-2 font-heading text-sm font-bold text-ink-heading dark:text-ink-dark-heading">{pct}%</p>
+  )}
+</div>

@@ -96,7 +96,11 @@ const metricas = defineCollection({
   schema: z.object({
     id: z.string(),
     label: z.string(),
-    valor: z.number(),
+    // Opcional de propósito: omitir valor (em vez de gravar 0) é como o CMS
+    // marca "ainda não medido" — ver StatTile/Meter, que tratam 0 como um
+    // valor real e undefined como "sem dado ainda" (achado de code review:
+    // tratar 0 como sentinela esconderia uma métrica que zerou de verdade).
+    valor: z.number().optional(),
     unidade: z.string().optional(),
     categoria: z.enum(['projeto', 'universidade', 'engenharia']),
     ano: z.number().optional(),

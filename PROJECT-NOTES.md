@@ -35,6 +35,11 @@ avança; não é histórico (isso é o git log), é o estado atual do que falta 
   está exposta em `public/admin/config.yml` ainda. Testar na implementação; se não funcionar, mudar
   o YAML pra `{ metricas: [...] }` e ajustar o loader.
 
+- **IA da navegação principal** (`Nav.astro`): atualizada pra refletir as 8 seções do NOTES.md
+  (Início, Dados, Ações, Parcerias, Pesquisa, Blog, Escolas, Contato), substituindo os links antigos
+  de fase 0 (`/vestibular`, `/sobre`) que não correspondiam a nenhuma seção do brief. Rótulos/ordem
+  são um palpite razoável, não confirmado com o time — revisar antes de considerar definitivo.
+
 ## Riscos a verificar na implementação
 
 - Confirmar que a versão atual do Sveltia CMS (verificar changelog/docs no momento de configurar o

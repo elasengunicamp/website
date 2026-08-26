@@ -36,7 +36,11 @@ export const textures: GraphicVariant[] = [
   { file: 'textures/48.png', tags: ['unreviewed'] },
   { file: 'textures/50.png', tags: ['unreviewed'] },
   { file: 'textures/51.png', tags: ['unreviewed'] },
-  { file: 'textures/52.png', tags: ['unreviewed'] },
+  {
+    file: 'textures/52.png',
+    tags: ['washi-tape', 'gingham', 'lilac'],
+    descricao: 'Fita washi xadrez gingham lilás/branco — usada como acento decorativo nas capas do blog',
+  },
   { file: 'textures/53.png', tags: ['unreviewed'] },
 ];
 
@@ -48,5 +52,14 @@ export const decorative: GraphicVariant[] = [
 
 // Ícones de linha (estilo doodle monolinha) — complementam DoodleDecoration.astro
 export const icons: GraphicVariant[] = [
-  '14', '17', '18', '21', '24', '28', '29', '36', '37', '38', '43', '44', '45', '47',
-].map((n) => ({ file: `icons/${n}.png`, tags: ['unreviewed'] }));
+  { file: 'icons/14.png', tags: ['unreviewed'] },
+  {
+    file: 'icons/17.png',
+    tags: ['pushpin', 'lilac', 'sticker'],
+    descricao: 'Pin/percevejo lilás (PNG com fundo transparente) — usado pra "fixar" cards de citação em Pesquisa/Elas indica',
+  },
+  ...['18', '21', '24', '28', '29', '36', '37', '38', '43', '44', '45', '47'].map((n) => ({
+    file: `icons/${n}.png`,
+    tags: ['unreviewed'],
+  })),
+];

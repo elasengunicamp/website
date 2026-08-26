@@ -66,9 +66,10 @@ const pesquisa = defineCollection({
   }),
 });
 
-// Blog — posts de MKT/entrevistas
+// Blog — posts de MKT/entrevistas. Corpo renderiza como MDX (@astrojs/mdx já
+// configurado em astro.config.mjs) — glob aceita .md e .mdx.
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     titulo: z.string(),
     data: z.coerce.date(),

@@ -42,11 +42,14 @@ export const textures: GraphicVariant[] = [
 
 // Ilustrações soltas estilo colagem/scrapbook — reviewed: false até curadoria visual
 export const decorative: GraphicVariant[] = [
-  '12', '13', '15', '16', '19', '20', '22', '23', '25', '26', '27', '30', '31', '32', '33', '34',
-  '35', '39', '40', '41', '42', '49',
-].map((n) => ({ file: `decorative/${n}.png`, tags: ['unreviewed'] }));
+  { file: 'decorative/12.png', tags: ['sticker', 'star', 'fabric'], descricao: 'Adesivo tecido — estrela roxa (recortada e sem fundo em public/images/decor/sticker-star-fabric.webp, usado em /escolas)' },
+  ...['13', '15', '16', '19', '20', '22', '23', '25', '26', '27', '30', '31', '32', '33', '34',
+  '35', '39', '40', '41', '42', '49'].map((n) => ({ file: `decorative/${n}.png`, tags: ['unreviewed'] })),
+];
 
 // Ícones de linha (estilo doodle monolinha) — complementam DoodleDecoration.astro
 export const icons: GraphicVariant[] = [
-  '14', '17', '18', '21', '24', '28', '29', '36', '37', '38', '43', '44', '45', '47',
-].map((n) => ({ file: `icons/${n}.png`, tags: ['unreviewed'] }));
+  { file: 'icons/14.png', tags: ['capacete', 'engenharia'], descricao: 'Capacete roxo de engenharia (recortado e sem fundo em public/images/decor/icon-capacete.webp, usado em /escolas)' },
+  { file: 'icons/18.png', tags: ['megafone', 'halftone', 'aviso'], descricao: 'Megafone estilo halftone/fanzine (recortado e sem fundo em public/images/decor/icon-megafone.webp, usado em /escolas)' },
+  ...['17', '21', '24', '28', '29', '36', '37', '38', '43', '44', '45', '47'].map((n) => ({ file: `icons/${n}.png`, tags: ['unreviewed'] })),
+];

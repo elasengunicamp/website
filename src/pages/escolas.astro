@@ -1,0 +1,151 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import StickerFrame from '../components/ui/StickerFrame.astro';
+import WindowChrome from '../components/ui/WindowChrome.astro';
+import Badge from '../components/ui/Badge.astro';
+import DoodleDecoration from '../components/ui/DoodleDecoration.astro';
+import type { Tilt } from '../components/ui/StickerFrame.astro';
+
+const videos = (await getCollection('escolas-videos')).sort((a, b) => a.data.ordem - b.data.ordem);
+
+// Pequena variação de inclinação pros cards de vídeo, motivo scrapbook.
+const tilts: Tilt[] = [-2, 1, -1, 2];
+
+// TODO(pendência do time): definir a ferramenta/URL real dos flashcards
+// (deck próprio, plataforma existente, página dedicada?) antes de trocar
+// esse link placeholder.
+const flashcardsUrl: string | null = null;
+---
+
+<BaseLayout
+  title="Escolas"
+  description="Vídeos e materiais de apoio do Elas na Engenharia pra professoras e estudantes se prepararem pro vestibular."
+>
+  <!-- HERO -->
+  <section class="relative overflow-hidden bg-gradient-section px-4 pb-20 pt-16 sm:px-6 sm:pt-20">
+    <div class="mx-auto max-w-3xl">
+      <Badge accent="purple">Para escolas e vestibulandas</Badge>
+      <h1 class="mt-5 font-heading text-4xl font-bold text-ink-heading dark:text-ink-dark-heading sm:text-5xl">
+        Escolas &amp; Ensino
+      </h1>
+      <p class="mt-5 max-w-xl font-body text-lg leading-relaxed text-ink dark:text-ink-dark">
+        Vídeos curtos pra apoiar professoras e estudantes na preparação pro vestibular — e, em breve,
+        acesso aos nossos flashcards de revisão.
+      </p>
+    </div>
+
+    <img
+      src="/images/decor/icon-capacete.webp"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute -right-2 top-10 hidden w-28 rotate-[-8deg] drop-shadow-md sm:block md:w-32 md:right-10"
+    />
+  </section>
+
+  <!-- GALERIA DE VÍDEOS -->
+  <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <SectionHeading eyebrow="Conteúdo">Vídeos</SectionHeading>
+
+    {videos.length > 0 ? (
+      <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {videos.map((video, i) => (
+          <StickerFrame tilt={tilts[i % tilts.length]} class="block w-full">
+            <div class="overflow-hidden rounded-[calc(var(--radius-sticker)-4px)]">
+              <div class="relative aspect-video bg-brand dark:bg-brand-dark-surface">
+                <iframe
+                  src={video.data.embedUrl}
+                  title={video.data.titulo}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  class="absolute inset-0 h-full w-full"
+                ></iframe>
+              </div>
+              <div class="p-4">
+                <h3 class="font-heading text-base font-bold text-ink-heading dark:text-ink-dark-heading">
+                  {video.data.titulo}
+                </h3>
+                <p class="mt-2 font-body text-sm leading-relaxed text-ink dark:text-ink-dark">
+                  {video.data.descricao}
+                </p>
+              </div>
+            </div>
+          </StickerFrame>
+        ))}
+      </div>
+    ) : (
+      <p class="mt-10 font-body text-sm text-ink dark:text-ink-dark">
+        Em breve, novos vídeos por aqui.
+      </p>
+    )}
+  </section>
+
+  <!-- CTA FLASHCARDS -->
+  <section class="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+    <div class="relative">
+      <img
+        src="/images/decor/sticker-star-fabric.webp"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute -top-6 left-4 hidden w-14 rotate-[-12deg] sm:block"
+      />
+      <img
+        src="/images/decor/icon-megafone.webp"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute -bottom-4 right-2 hidden w-24 rotate-6 sm:block"
+      />
+
+      <WindowChrome title="flashcards.exe">
+        <div class="max-w-xl space-y-4 p-2 sm:p-4">
+          <h2 class="font-heading text-2xl font-bold text-ink-heading dark:text-ink-dark-heading">
+            Continue estudando com os flashcards
+          </h2>
+          <p class="font-body text-sm leading-relaxed text-ink dark:text-ink-dark">
+            Cartões de revisão rápida por matéria, pensados pra reforçar o conteúdo dos vídeos acima.
+          </p>
+          <div class="flex flex-wrap items-center gap-3">
+            {flashcardsUrl ? (
+              <a
+                href={flashcardsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 font-body text-sm font-semibold text-brand-cream transition-colors hover:bg-brand/90 dark:bg-brand-lilac dark:text-brand-dark dark:hover:bg-brand-lilac/90"
+              >
+                Acessar flashcards
+              </a>
+            ) : (
+              <span
+                aria-disabled="true"
+                class="inline-flex cursor-not-allowed items-center justify-center rounded-full bg-brand/20 px-6 py-3 font-body text-sm font-semibold text-brand/50 dark:bg-brand-lilac/10 dark:text-ink-dark/40"
+              >
+                Acessar flashcards
+              </span>
+            )}
+            <Badge accent="rose">link a definir</Badge>
+          </div>
+          <p class="font-mono text-xs italic text-ink/70 dark:text-ink-dark/70">
+            Pendência: definir a ferramenta (deck próprio, plataforma existente, página dedicada) com
+            a coordenação do projeto.
+          </p>
+        </div>
+      </WindowChrome>
+    </div>
+  </section>
+
+  <!-- LINK PRA CONTATO -->
+  <section class="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+    <div class="flex items-center gap-4">
+      <DoodleDecoration variant="arrow" class="hidden h-8 w-8 shrink-0 sm:block" />
+      <p class="font-body text-base text-ink dark:text-ink-dark">
+        Sua escola quer agendar uma visita ou uma palestra?
+        {' '}
+        <a href="/contato" class="font-semibold text-brand underline hover:text-accent-purple dark:text-brand-lilac">
+          Fale com a gente
+        </a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

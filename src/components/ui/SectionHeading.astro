@@ -1,0 +1,27 @@
+---
+export interface Props {
+  eyebrow?: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { eyebrow, align = 'left', class: className } = Astro.props;
+---
+
+<div class:list={['space-y-2', align === 'center' && 'text-center', className]}>
+  {eyebrow && (
+    <p class="font-body text-xs font-semibold uppercase tracking-widest text-accent-purple">
+      {eyebrow}
+    </p>
+  )}
+  <h2 class="font-heading text-3xl font-bold text-ink-heading dark:text-ink-dark-heading">
+    <slot />
+  </h2>
+  <div
+    class:list={[
+      'h-1 w-16 rounded-full bg-gradient-cta',
+      align === 'center' && 'mx-auto',
+    ]}
+  >
+  </div>
+</div>

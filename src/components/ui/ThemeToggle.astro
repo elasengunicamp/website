@@ -1,0 +1,31 @@
+---
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Alternar tema claro/escuro"
+  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand/20 text-ink transition-colors hover:bg-brand-lilac dark:border-brand-lilac/20 dark:text-ink-dark dark:hover:bg-brand-dark-surface"
+>
+  <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke-linecap="round" />
+    <circle cx="12" cy="12" r="4" />
+  </svg>
+  <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</button>
+
+<script>
+  const STORAGE_KEY = 'theme';
+
+  function setTheme(theme: 'light' | 'dark') {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem(STORAGE_KEY, theme);
+  }
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    setTheme(isDark ? 'light' : 'dark');
+  });
+</script>

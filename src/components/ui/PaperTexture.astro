@@ -1,0 +1,49 @@
+---
+// Frame "papelaria de scrapbook" (papel rasgado / xadrez gingham / washi
+// tape) do manual de identidade. Texturas simuladas via CSS (clip-path /
+// gradientes) em vez de raster, pra ficarem recoloráveis pelos tokens da
+// marca e não dependerem de recortes manuais de imagens compostas do PDF.
+export type PaperVariant = 'torn' | 'gingham' | 'washi';
+
+export interface Props {
+  variant?: PaperVariant;
+  class?: string;
+}
+
+const { variant = 'torn', class: className } = Astro.props;
+---
+
+{variant === 'torn' && (
+  <div
+    class:list={[
+      'relative bg-white p-6 shadow-md dark:bg-brand-dark-surface',
+      className,
+    ]}
+    style="clip-path: polygon(0% 2%, 4% 0%, 9% 1.5%, 15% 0%, 22% 1.8%, 29% 0.3%, 36% 1.5%, 44% 0%, 51% 1.2%, 59% 0.2%, 67% 1.6%, 75% 0%, 83% 1.3%, 91% 0.4%, 96% 1.7%, 100% 0%, 100% 100%, 0% 100%);"
+  >
+    <slot />
+  </div>
+)}
+
+{variant === 'gingham' && (
+  <div
+    class:list={[
+      'relative border border-brand/15 bg-white p-6 dark:border-brand-lilac/15 dark:bg-brand-dark-surface',
+      className,
+    ]}
+    style="background-image: repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-accent-purple) 18%, transparent) 0 6px, transparent 6px 12px), repeating-linear-gradient(90deg, color-mix(in srgb, var(--color-accent-purple) 18%, transparent) 0 6px, transparent 6px 12px);"
+  >
+    <slot />
+  </div>
+)}
+
+{variant === 'washi' && (
+  <div class:list={['relative bg-white p-6 shadow-md dark:bg-brand-dark-surface', className]}>
+    <span
+      class="absolute -top-3 left-6 h-6 w-16 -rotate-6 bg-accent-yellow/70 shadow-sm"
+      aria-hidden="true"
+    >
+    </span>
+    <slot />
+  </div>
+)}

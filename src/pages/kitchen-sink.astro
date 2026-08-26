@@ -1,0 +1,156 @@
+---
+// Style guide interno — não linkado no nav. QA visual dos tokens e
+// primitivos de marca antes de conteúdo real ser escrito (Fase 1 do plano).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import Badge from '../components/ui/Badge.astro';
+import Card from '../components/ui/Card.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import StickerFrame from '../components/ui/StickerFrame.astro';
+import WindowChrome from '../components/ui/WindowChrome.astro';
+import PaperTexture from '../components/ui/PaperTexture.astro';
+import DoodleDecoration from '../components/ui/DoodleDecoration.astro';
+import HalftonePhoto from '../components/ui/HalftonePhoto.astro';
+import EllaMascot from '../components/ui/EllaMascot.astro';
+
+const accents = ['blue', 'teal', 'pink', 'purple', 'yellow', 'rose'] as const;
+const doodles = ['star', 'heart', 'sparkle', 'arrow', 'scribble'] as const;
+---
+
+<BaseLayout title="Kitchen Sink">
+  <div class="mx-auto max-w-5xl space-y-16 px-4 py-16 sm:px-6">
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Cores">Paleta da marca</SectionHeading>
+      <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+        <div class="space-y-1">
+          <div class="h-16 rounded-lg bg-brand-cream ring-1 ring-black/5"></div>
+          <p class="font-mono text-xs">brand-cream</p>
+        </div>
+        <div class="space-y-1">
+          <div class="h-16 rounded-lg bg-brand"></div>
+          <p class="font-mono text-xs">brand</p>
+        </div>
+        <div class="space-y-1">
+          <div class="h-16 rounded-lg bg-brand-lilac ring-1 ring-black/5"></div>
+          <p class="font-mono text-xs">brand-lilac</p>
+        </div>
+        {accents.map((a) => (
+          <div class="space-y-1">
+            <div class={`h-16 rounded-lg bg-accent-${a}`}></div>
+            <p class="font-mono text-xs">accent-{a}</p>
+          </div>
+        ))}
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="h-12 rounded-lg bg-gradient-cta"></div>
+        <div class="h-12 rounded-lg bg-gradient-soft"></div>
+        <div class="h-12 rounded-lg bg-gradient-section"></div>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Tipografia">Fontes</SectionHeading>
+      <p class="font-heading text-3xl font-bold text-ink-heading dark:text-ink-dark-heading">
+        font-heading — Elas na Engenharia
+      </p>
+      <p class="font-script text-3xl text-brand dark:text-brand-lilac">font-script — Engenharia</p>
+      <p class="font-body text-base text-ink dark:text-ink-dark">
+        font-body — Projeto de extensão que promove equidade de gênero nas engenharias.
+      </p>
+      <p class="font-mono text-sm">font-mono — elas-na-engenharia.exe</p>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Ações">Botões</SectionHeading>
+      <div class="flex flex-wrap items-center gap-3">
+        <Button variant="primary">Primário</Button>
+        <Button variant="secondary">Secundário</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="primary" size="lg">Primário lg</Button>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Tags">Badges por matéria</SectionHeading>
+      <div class="flex flex-wrap gap-2">
+        {accents.map((a) => <Badge accent={a}>Matéria {a}</Badge>)}
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Conteúdo">Card</SectionHeading>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <Card>
+          <h3 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">Card estático</h3>
+          <p class="mt-2 font-body text-sm text-ink dark:text-ink-dark">Sem link, sem hover de sombra.</p>
+        </Card>
+        <Card href="#">
+          <h3 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">Card com link</h3>
+          <p class="mt-2 font-body text-sm text-ink dark:text-ink-dark">Hover mostra sombra maior.</p>
+        </Card>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Motivo scrapbook">Sticker frame</SectionHeading>
+      <div class="flex flex-wrap gap-6">
+        <StickerFrame tilt={-2}>
+          <div class="flex h-24 w-24 items-center justify-center bg-accent-yellow font-heading text-sm">-2°</div>
+        </StickerFrame>
+        <StickerFrame tilt={0}>
+          <div class="flex h-24 w-24 items-center justify-center bg-accent-pink font-heading text-sm">0°</div>
+        </StickerFrame>
+        <StickerFrame tilt={3}>
+          <div class="flex h-24 w-24 items-center justify-center bg-accent-teal font-heading text-sm text-white">3°</div>
+        </StickerFrame>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Motivo retro-digital">Window chrome</SectionHeading>
+      <WindowChrome title="impacto.exe">
+        <p class="font-body text-sm text-ink dark:text-ink-dark">Conteúdo dentro da janela retrô.</p>
+      </WindowChrome>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Motivo papelaria">Paper texture</SectionHeading>
+      <div class="grid gap-6 sm:grid-cols-3">
+        <PaperTexture variant="torn">
+          <p class="font-body text-sm">Papel rasgado</p>
+        </PaperTexture>
+        <PaperTexture variant="gingham">
+          <p class="font-body text-sm">Xadrez gingham</p>
+        </PaperTexture>
+        <PaperTexture variant="washi">
+          <p class="font-body text-sm">Washi tape</p>
+        </PaperTexture>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Micro-decoração">Doodles</SectionHeading>
+      <div class="flex flex-wrap gap-4">
+        {doodles.map((d) => <DoodleDecoration variant={d} />)}
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Fotografia">Halftone photo</SectionHeading>
+      <HalftonePhoto
+        src="/images/brand/ella-mascot.png"
+        alt="Exemplo de tratamento halftone"
+        class="h-40 w-40 rounded-lg"
+      />
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeading eyebrow="Momentos informais">Mascote Ella</SectionHeading>
+      <div class="flex flex-wrap items-end gap-8">
+        <EllaMascot size="sm" />
+        <EllaMascot size="md" />
+        <EllaMascot size="lg">Oi! Sou a Ella 👋</EllaMascot>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

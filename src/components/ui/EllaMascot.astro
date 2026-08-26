@@ -1,0 +1,33 @@
+---
+// Mascote "Ella" (manual de identidade). Uso restrito: só em momentos
+// informais/interativos/comemorativos — nunca em conteúdo técnico formal
+// (ex.: páginas de resolução de problema, documentos institucionais).
+// Inventário de onde ela pode aparecer neste site (revisar com o time antes
+// de estender): estado vazio de busca, sucesso de formulário, página 404,
+// tooltip de onboarding na plataforma de estudos.
+export interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { size = 'md', class: className } = Astro.props;
+
+const sizeClasses = {
+  sm: 'w-16',
+  md: 'w-28',
+  lg: 'w-44',
+} as const;
+---
+
+<div class:list={['inline-flex flex-col items-center gap-2', className]}>
+  <img
+    src="/images/brand/ella-mascot.png"
+    alt="Ella, a mascote do Elas na Engenharia"
+    class:list={['h-auto', sizeClasses[size]]}
+  />
+  {Astro.slots.has('default') && (
+    <div class="relative rounded-2xl bg-brand-lilac px-4 py-2 text-center font-body text-sm text-brand dark:bg-brand-dark-surface dark:text-ink-dark">
+      <slot />
+    </div>
+  )}
+</div>

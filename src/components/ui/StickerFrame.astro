@@ -1,0 +1,32 @@
+---
+// Wrapper "sticker die-cut": borda branca grossa + sombra recortada + leve
+// inclinação, pro motivo "scrapbook retrô" do manual de identidade.
+export type Tilt = -3 | -2 | -1 | 0 | 1 | 2 | 3;
+
+export interface Props {
+  tilt?: Tilt;
+  class?: string;
+}
+
+const { tilt = 0, class: className } = Astro.props;
+
+const tiltClasses: Record<Tilt, string> = {
+  [-3]: '-rotate-3',
+  [-2]: '-rotate-2',
+  [-1]: '-rotate-1',
+  0: '',
+  1: 'rotate-1',
+  2: 'rotate-2',
+  3: 'rotate-3',
+};
+---
+
+<div
+  class:list={[
+    'inline-block rounded-sticker border-4 border-white bg-white shadow-sticker transition-transform hover:rotate-0 dark:border-brand-dark-surface dark:bg-brand-dark-surface',
+    tiltClasses[tilt],
+    className,
+  ]}
+>
+  <slot />
+</div>

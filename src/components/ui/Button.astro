@@ -1,0 +1,38 @@
+---
+export interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'default' | 'lg';
+  class?: string;
+}
+
+const { href, variant = 'primary', size = 'default', class: className } = Astro.props;
+
+const variantClasses = {
+  primary:
+    'bg-brand text-brand-cream hover:bg-brand/90 dark:bg-brand-lilac dark:text-brand-dark dark:hover:bg-brand-lilac/90',
+  secondary:
+    'bg-brand-lilac text-brand hover:bg-brand-lilac/80 dark:bg-brand-dark-surface dark:text-ink-dark-heading dark:hover:bg-brand-dark-surface/80',
+  ghost:
+    'bg-transparent text-brand ring-1 ring-inset ring-brand/30 hover:bg-brand-lilac/50 dark:text-ink-dark-heading dark:ring-brand-lilac/30 dark:hover:bg-brand-dark-surface/50',
+} as const;
+
+const sizeClasses = {
+  default: 'px-4 py-2 text-sm',
+  lg: 'px-6 py-3 text-base',
+} as const;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'inline-flex items-center justify-center rounded-full font-body font-semibold transition-colors',
+    variantClasses[variant],
+    sizeClasses[size],
+    className,
+  ]}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* Class-based dark mode (toggled via ThemeToggle, not prefers-color-scheme only) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Brand — primary palette (manual_identidade_elas.pdf) */
+  --color-brand: #4c0062; /* roxo escuro — cor principal: logos, títulos, CTAs */
+  --color-brand-cream: #f2e8e3; /* fundos claros */
+  --color-brand-lilac: #f8dfff; /* destaques, info boxes */
+
+  /* Dark-mode surface/text — derived from brand, not generic gray */
+  --color-brand-dark: #1a0022; /* fundo de página no dark mode */
+  --color-brand-dark-surface: #2e0044; /* cards/superfícies no dark mode */
+  --color-ink-dark: #f2e8e3; /* corpo de texto no dark mode */
+  --color-ink-dark-heading: #f8dfff; /* títulos no dark mode */
+
+  /* Text */
+  --color-ink: #545454; /* corpo de texto (light mode) */
+  --color-ink-heading: #4c0062; /* títulos (light mode) */
+
+  /* Accent / secondary — usado p.ex. pra cor por matéria na plataforma de estudos */
+  --color-accent-blue: #6793c7;
+  --color-accent-teal: #167c82;
+  --color-accent-pink: #f3d1dc;
+  --color-accent-purple: #ac58c4;
+  --color-accent-yellow: #f8e8b8;
+  --color-accent-rose: #d9657e;
+
+  /* Gradientes da marca */
+  --background-image-gradient-cta: linear-gradient(135deg, #f8dfff, #4c0062);
+  --background-image-gradient-soft: linear-gradient(135deg, #f2e8e3, #f8dfff);
+  --background-image-gradient-section: linear-gradient(180deg, #f2e8e3, #f8dfff, #4c0062);
+
+  /* Tipografia — ver FONTS.md pra status placeholder vs. fontes originais da marca */
+  --font-heading: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Alex Brush", cursive;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Radius/shadow — estética sticker die-cut e janela retro-digital */
+  --radius-sticker: 1.25rem;
+  --shadow-sticker: 0 0 0 4px #fff, 0 6px 14px rgb(0 0 0 / 0.15);
+  --shadow-window: 4px 4px 0 0 rgb(0 0 0 / 0.35);
+}
+
+/* Safelist de classes accent-* construídas dinamicamente a partir de
+   accentToken nas content collections (Tailwind v4 não varre strings
+   interpoladas em runtime, precisa de geração forçada aqui). */
+@source inline("{bg,text,border}-accent-{blue,teal,pink,purple,yellow,rose}");
+
+body {
+  @apply bg-brand-cream text-ink dark:bg-brand-dark dark:text-ink-dark font-body antialiased;
+}

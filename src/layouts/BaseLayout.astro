@@ -1,0 +1,53 @@
+---
+import '../styles/global.css';
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/700.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/alex-brush/400.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/700.css';
+import Nav from '../components/ui/Nav.astro';
+import Footer from '../components/ui/Footer.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Elas na Engenharia — projeto de extensão da Unicamp/FEM que promove equidade de gênero nas engenharias.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title} · Elas na Engenharia</title>
+
+    <script is:inline>
+      // Aplica o tema antes do primeiro paint pra evitar flash claro/escuro.
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <Nav />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

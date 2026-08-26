@@ -1,0 +1,30 @@
+---
+const currentYear = new Date().getFullYear();
+
+const socials = [
+  { label: 'Instagram', href: 'https://instagram.com/elasnaengenharia.unicamp' },
+  { label: 'YouTube', href: 'https://youtube.com/@elasnaengenharia' },
+  { label: 'E-mail', href: 'mailto:contato@elasnaengenharia.com.br' },
+];
+---
+
+<footer class="bg-brand text-brand-cream dark:bg-brand-dark-surface">
+  <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <p class="font-body text-sm">
+      &copy; {currentYear} Elas na Engenharia — FEM/Unicamp. Projeto de extensão.
+    </p>
+
+    <nav class="flex items-center gap-5">
+      {socials.map((social) => (
+        <a
+          href={social.href}
+          class="font-body text-sm text-brand-cream/80 transition-colors hover:text-brand-lilac"
+          target={social.href.startsWith('http') ? '_blank' : undefined}
+          rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+        >
+          {social.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</footer>

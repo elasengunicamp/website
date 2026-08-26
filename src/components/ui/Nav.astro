@@ -1,0 +1,48 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import MobileMenu from './MobileMenu.astro';
+
+const links = [
+  { href: '/', label: 'Início' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/vestibular', label: 'Vestibular' },
+  { href: '/sobre', label: 'Sobre' },
+];
+---
+
+<header class="sticky top-0 z-40 border-b border-brand/10 bg-brand-cream/90 backdrop-blur dark:border-brand-lilac/10 dark:bg-brand-dark/90">
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <a href="/" class="flex items-center gap-2">
+      <img
+        src="/images/brand/logo-icon.png"
+        alt="Elas na Engenharia"
+        width="32"
+        height="32"
+        class="h-8 w-8 dark:brightness-110"
+      />
+      <img
+        src="/images/brand/lockup-horizontal.png"
+        alt="Elas na Engenharia"
+        width="149"
+        height="21"
+        class="hidden h-5 w-auto dark:brightness-150 dark:contrast-125 sm:block"
+      />
+    </a>
+
+    <nav class="hidden items-center gap-6 md:flex">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class="font-body text-sm font-medium text-ink transition-colors hover:text-brand dark:text-ink-dark dark:hover:text-brand-lilac"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <ThemeToggle />
+      <MobileMenu links={links} />
+    </div>
+  </div>
+</header>

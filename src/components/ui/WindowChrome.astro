@@ -1,0 +1,29 @@
+---
+// Janela estilo "interface retro-digital" (Windows 95-ish) do manual de
+// identidade: barra de título roxa com botões min/max/close, sombra dura.
+export interface Props {
+  title?: string;
+  class?: string;
+}
+
+const { title = 'elas-na-engenharia.exe', class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    'overflow-hidden rounded-lg border-2 border-brand bg-white shadow-window dark:border-brand-lilac dark:bg-brand-dark-surface',
+    className,
+  ]}
+>
+  <div class="flex items-center justify-between bg-brand px-2 py-1 dark:bg-brand-lilac">
+    <span class="truncate font-mono text-xs text-brand-cream dark:text-brand-dark">{title}</span>
+    <div class="flex items-center gap-1">
+      <span class="h-3 w-3 border border-brand-cream/60 bg-brand/60 dark:border-brand-dark/60 dark:bg-brand-lilac/60"></span>
+      <span class="h-3 w-3 border border-brand-cream/60 bg-brand/60 dark:border-brand-dark/60 dark:bg-brand-lilac/60"></span>
+      <span class="h-3 w-3 border border-brand-cream/60 bg-brand/60 dark:border-brand-dark/60 dark:bg-brand-lilac/60"></span>
+    </div>
+  </div>
+  <div class="p-4">
+    <slot />
+  </div>
+</div>

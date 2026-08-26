@@ -1,0 +1,41 @@
+---
+// Doodle manuscrito (SVG monolinha) — decoração espontânea do manual de
+// identidade. Puramente decorativo: aria-hidden, sem valor semântico.
+export type DoodleVariant = 'star' | 'heart' | 'sparkle' | 'arrow' | 'scribble';
+
+export interface Props {
+  variant?: DoodleVariant;
+  class?: string;
+}
+
+const { variant = 'star', class: className } = Astro.props;
+---
+
+<svg
+  class:list={['pointer-events-none select-none text-brand', className]}
+  width="32"
+  height="32"
+  viewBox="0 0 32 32"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  {variant === 'star' && (
+    <path d="M16 4 L19 13 L28 13 L21 19 L23 28 L16 22 L9 28 L11 19 L4 13 L13 13 Z" />
+  )}
+  {variant === 'heart' && (
+    <path d="M16 27 C6 20 3 14 6 9 C8 5.5 13 5 16 10 C19 5 24 5.5 26 9 C29 14 26 20 16 27 Z" />
+  )}
+  {variant === 'sparkle' && (
+    <path d="M16 3 L18 13 L28 16 L18 19 L16 29 L14 19 L4 16 L14 13 Z" />
+  )}
+  {variant === 'arrow' && (
+    <path d="M4 22 C12 8 20 6 27 9 M27 9 L21 8 M27 9 L24 15" />
+  )}
+  {variant === 'scribble' && (
+    <path d="M3 20 C8 8 14 26 19 14 C22 6 26 18 29 12" />
+  )}
+</svg>

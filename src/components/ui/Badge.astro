@@ -1,0 +1,31 @@
+---
+export type AccentToken = 'blue' | 'teal' | 'pink' | 'purple' | 'yellow' | 'rose';
+
+export interface Props {
+  accent?: AccentToken;
+  class?: string;
+}
+
+const { accent = 'purple', class: className } = Astro.props;
+
+// Classes escritas por extenso (nunca `bg-accent-${accent}`) — Tailwind v4
+// só gera utilities que aparecem como string literal no código-fonte.
+const accentClasses = {
+  blue: 'bg-accent-blue/20 text-accent-blue',
+  teal: 'bg-accent-teal/20 text-accent-teal',
+  pink: 'bg-accent-pink/40 text-[#a24f68]',
+  purple: 'bg-accent-purple/20 text-accent-purple',
+  yellow: 'bg-accent-yellow/40 text-[#8a6d1f]',
+  rose: 'bg-accent-rose/20 text-accent-rose',
+} as const;
+---
+
+<span
+  class:list={[
+    'inline-flex items-center rounded-full px-3 py-1 font-body text-xs font-medium',
+    accentClasses[accent],
+    className,
+  ]}
+>
+  <slot />
+</span>

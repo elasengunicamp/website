@@ -1,0 +1,87 @@
+---
+// Grade de Parcerias (NOTES.md — "Apresentar parceiros, com logos, sobre e
+// links. ... SWE, Technovation..."). Rascunho visual aprovado no /design
+// antes de codar (ver PR): grade agrupada por categoria, cards logo-first.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Card from '../components/ui/Card.astro';
+
+const parceiros = (await getCollection('parceiros')).sort((a, b) => a.data.ordem - b.data.ordem);
+
+const SEM_CATEGORIA = 'Parceiros';
+const grupos = new Map<string, typeof parceiros>();
+for (const parceiro of parceiros) {
+  const categoria = parceiro.data.categoria?.trim() || SEM_CATEGORIA;
+  const grupo = grupos.get(categoria) ?? [];
+  grupo.push(parceiro);
+  grupos.set(categoria, grupo);
+}
+---
+
+<BaseLayout title="Parcerias" description="Organizações parceiras do Elas na Engenharia — formação, networking e visibilidade.">
+  <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <img
+      src="/images/decor/sticker-star-fabric.webp"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute right-6 top-2 hidden w-16 rotate-12 sm:block"
+    />
+
+    <SectionHeading eyebrow="Quem caminha com a gente" align="center" class="mx-auto max-w-2xl">
+      Parcerias
+    </SectionHeading>
+    <p class="mx-auto mt-4 max-w-2xl text-center font-body text-base text-ink dark:text-ink-dark">
+      Organizações que apoiam o Elas na Engenharia em formação, networking e visibilidade.
+    </p>
+
+    {parceiros.length === 0 ? (
+      <p class="mt-16 text-center font-body text-ink dark:text-ink-dark">
+        Nenhuma parceria publicada ainda — volte em breve.
+      </p>
+    ) : (
+      <div class="mt-14 flex flex-col gap-14">
+        {[...grupos.entries()].map(([categoria, itens]) => (
+          <section>
+            {grupos.size > 1 && (
+              <h2 class="mb-6 font-heading text-sm font-bold uppercase tracking-widest text-ink-heading dark:text-ink-dark-heading">
+                {categoria}
+              </h2>
+            )}
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {itens.map((parceiro) => (
+                <Card>
+                  <div class="flex flex-col items-center gap-4 text-center">
+                    <div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl bg-brand-lilac/40 dark:bg-brand-dark/40">
+                      <img
+                        src={parceiro.data.logo}
+                        alt={parceiro.data.nome}
+                        class="h-full w-full object-contain p-2"
+                        loading="lazy"
+                      />
+                    </div>
+                    <h3 class="font-heading text-base font-bold text-ink-heading dark:text-ink-dark-heading">
+                      {parceiro.data.nome}
+                    </h3>
+                    <p class="font-body text-sm text-ink dark:text-ink-dark">{parceiro.data.sobre}</p>
+                    <a
+                      href={parceiro.data.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="mt-1 inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 font-body text-xs font-semibold text-brand-cream transition-colors hover:bg-brand/90 dark:bg-brand-lilac dark:text-brand-dark dark:hover:bg-brand-lilac/90"
+                    >
+                      Visitar site
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M7 17L17 7M8 7h9v9" />
+                      </svg>
+                    </a>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    )}
+  </div>
+</BaseLayout>

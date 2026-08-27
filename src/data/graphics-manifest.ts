@@ -50,7 +50,15 @@ const decorativeUnreviewed = [
 ].map((n): GraphicVariant => ({ file: `decorative/${n}.png`, tags: ['unreviewed'] }));
 
 export const decorative: GraphicVariant[] = [
-  { file: 'decorative/12.png', tags: ['sticker', 'star', 'fabric'], descricao: 'Adesivo de tecido (jeans) — estrela roxa com costura. Usar via public/images/decor/sticker-star-fabric.webp.' },
+  {
+    file: 'decorative/12.png',
+    tags: ['sticker', 'star', 'fabric'],
+    descricao:
+      'Adesivo de tecido (jeans) — estrela roxa com costura. Recortado e sem fundo em ' +
+      'public/images/decor/sticker-star-fabric-escolas.webp (usado em /escolas), ' +
+      'sticker-star-fabric-parcerias.webp (usado em /parcerias) e ' +
+      'sticker-star-fabric-home.webp (usado na Home).',
+  },
   { file: 'decorative/13.png', tags: ['doodle', 'sparkle', 'desenho-a-mao'], descricao: 'Estrela/brilho desenhado à mão, roxo sólido — mais elaborado que DoodleDecoration variant="sparkle"' },
   ...decorativeUnreviewed,
 ];
@@ -63,8 +71,30 @@ const iconsUnreviewed = [
 ].map((n): GraphicVariant => ({ file: `icons/${n}.png`, tags: ['unreviewed'] }));
 
 export const icons: GraphicVariant[] = [
-  { file: 'icons/14.png', tags: ['3d', 'capacete', 'engenharia'], descricao: 'Capacete de obra roxo, render 3D estilo emoji. Ainda não exportado pra public/images/decor/ nesta branch.' },
-  { file: 'icons/17.png', tags: ['3d', 'pin', 'mural'], descricao: 'Pin/tachinha lilás, render 3D — motivo "mural de cortiça" pra cards de Ações. Usar via public/images/decor/sticker-pushpin.webp.' },
-  { file: 'icons/18.png', tags: ['halftone', 'megafone', 'ilustracao'], descricao: 'Megafone em ilustração halftone roxo/rosa — bom pra destaque de "novidades/avisos"' },
+  {
+    file: 'icons/14.png',
+    tags: ['3d', 'capacete', 'engenharia'],
+    descricao:
+      'Capacete de obra roxo, render 3D estilo emoji. Recortado e sem fundo em ' +
+      'public/images/decor/icon-capacete-escolas.webp (usado em /escolas) e ' +
+      'icon-capacete-dados.webp (usado em /dados).',
+  },
+  {
+    file: 'icons/17.png',
+    tags: ['3d', 'pin', 'mural', 'pushpin', 'lilac', 'sticker'],
+    descricao:
+      'Pin/tachinha lilás, render 3D — motivo "mural de cortiça" pra cards de Ações, ' +
+      'recortado e sem fundo em public/images/decor/sticker-pushpin.webp (usado em /acoes). ' +
+      'Também usado direto (sem recorte) via /graphics/icons/17.png pra "fixar" cards de ' +
+      'citação em /pesquisa.',
+  },
+  {
+    file: 'icons/18.png',
+    tags: ['halftone', 'megafone', 'ilustracao', 'aviso'],
+    descricao:
+      'Megafone em ilustração halftone roxo/rosa — recortado e sem fundo em ' +
+      'public/images/decor/icon-megafone.webp (usado em /escolas); bom pra destaque de ' +
+      '"novidades/avisos".',
+  },
   ...iconsUnreviewed,
 ];

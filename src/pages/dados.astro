@@ -1,0 +1,101 @@
+---
+// Página "Dados" (NOTES.md): gráficos/métricas do projeto + dados de
+// participação feminina em universidades/engenharia. Layout travado via
+// skill "design" (ver PR): intro > métricas de "projeto" (stat tiles) >
+// participação feminina "universidade"/"engenharia" (meters) > nota de
+// estado dos dados.
+//
+// Forma escolhida via skill "dataviz": como cada métrica hoje tem só um
+// snapshot (sem série histórica ainda), um valor único é stat tile — nunca
+// um gráfico de barra única — e "% contra um limite" é meter, não pizza.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import StatTile from '../components/dados/StatTile.astro';
+import Meter from '../components/dados/Meter.astro';
+
+const metricas = await getCollection('metricas');
+
+const projeto = metricas.filter((m) => m.data.categoria === 'projeto');
+const universidade = metricas.filter((m) => m.data.categoria === 'universidade');
+const engenharia = metricas.filter((m) => m.data.categoria === 'engenharia');
+
+const temParticipacao = universidade.length > 0 || engenharia.length > 0;
+---
+
+<BaseLayout
+  title="Dados"
+  description="Crescimento do Elas na Engenharia e dados de participação feminina nas engenharias e na universidade."
+>
+  <section class="mx-auto max-w-5xl px-4 pb-4 pt-16 sm:px-6">
+    <SectionHeading eyebrow="Transparência">Dados</SectionHeading>
+    <p class="mt-4 max-w-2xl font-body text-ink dark:text-ink-dark">
+      Números que mostram o crescimento do Elas na Engenharia e o cenário da participação
+      feminina nas engenharias — na Unicamp e além.
+    </p>
+  </section>
+
+  {projeto.length > 0 && (
+    <section class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      <h2 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+        Crescimento do projeto
+      </h2>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {projeto.map((m) => (
+          <StatTile
+            label={m.data.label}
+            valor={m.data.valor}
+            unidade={m.data.unidade}
+            ano={m.data.ano}
+            accent="purple"
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {temParticipacao && (
+    <section class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      <div class="flex items-center gap-3">
+        <img
+          src="/images/decor/icon-capacete-dados.webp"
+          alt=""
+          aria-hidden="true"
+          class="h-8 w-8 flex-shrink-0"
+        />
+        <h2 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          Participação feminina
+        </h2>
+      </div>
+      <div class="mt-6 grid gap-8 sm:grid-cols-2">
+        {universidade.length > 0 && (
+          <div class="space-y-4">
+            <p class="font-body text-xs font-semibold uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">
+              Universidade
+            </p>
+            {universidade.map((m) => (
+              <Meter label={m.data.label} valor={m.data.valor} ano={m.data.ano} accent="blue" />
+            ))}
+          </div>
+        )}
+        {engenharia.length > 0 && (
+          <div class="space-y-4">
+            <p class="font-body text-xs font-semibold uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">
+              Engenharia
+            </p>
+            {engenharia.map((m) => (
+              <Meter label={m.data.label} valor={m.data.valor} ano={m.data.ano} accent="rose" />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <section class="mx-auto max-w-5xl px-4 pb-16 sm:px-6">
+    <p class="rounded-2xl border border-dashed border-brand/20 bg-white/60 p-4 font-body text-xs text-ink/70 dark:border-brand-lilac/20 dark:bg-brand-dark-surface/60 dark:text-ink-dark/70">
+      Os números acima são atualizados pela equipe via CMS. Enquanto uma métrica não tiver
+      valor registrado, ela aparece como “sem dado ainda” — não como zero.
+    </p>
+  </section>
+</BaseLayout>

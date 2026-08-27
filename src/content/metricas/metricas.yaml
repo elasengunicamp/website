@@ -1,18 +1,18 @@
+# valor fica omitido enquanto a métrica não tiver sido medida/atualizada
+# pela equipe via CMS — "sem dado ainda" na página /dados. Ao preencher um
+# valor real (inclusive 0, se for o caso), a página passa a mostrar o número.
 - id: integrantes-ativas
   label: Integrantes ativas
-  valor: 0
   unidade: pessoas
   categoria: projeto
   ano: 2026
 - id: escolas-visitadas
   label: Escolas visitadas
-  valor: 0
   unidade: escolas
   categoria: projeto
   ano: 2026
 - id: participacao-feminina-engenharia-unicamp
   label: Participação feminina na engenharia (Unicamp)
-  valor: 0
   unidade: "%"
   categoria: universidade
   ano: 2026

@@ -1,0 +1,49 @@
+---
+// Stat tile — forma escolhida via skill "dataviz": um valor atual único (sem
+// série histórica ainda) é estatística, não um gráfico de uma barra só.
+// Regra seguida: o valor usa cor de texto neutra (ink-heading), nunca a cor
+// de acento — a identidade da categoria fica só no "dot" ao lado do rótulo.
+export type AccentToken = 'blue' | 'teal' | 'pink' | 'purple' | 'yellow' | 'rose';
+
+export interface Props {
+  label: string;
+  // undefined = métrica ainda não medida ("sem dado ainda"); 0 é um valor
+  // real e deve aparecer como tal (achado de code review: 0 não é sentinela).
+  valor: number | undefined;
+  unidade?: string;
+  ano?: number;
+  accent?: AccentToken;
+}
+
+const { label, valor, unidade, ano, accent = 'purple' } = Astro.props;
+const semDado = valor === undefined;
+
+const dotClasses: Record<AccentToken, string> = {
+  blue: 'bg-accent-blue',
+  teal: 'bg-accent-teal',
+  pink: 'bg-accent-pink',
+  purple: 'bg-accent-purple',
+  yellow: 'bg-accent-yellow',
+  rose: 'bg-accent-rose',
+};
+---
+
+<div class="rounded-2xl border border-brand/10 bg-white p-5 shadow-sm dark:border-brand-lilac/10 dark:bg-brand-dark-surface">
+  <div class="flex items-center gap-2">
+    <span class:list={['h-2 w-2 flex-shrink-0 rounded-full', dotClasses[accent]]} aria-hidden="true"></span>
+    <p class="font-body text-xs font-semibold uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">
+      {label}
+    </p>
+  </div>
+
+  {semDado ? (
+    <p class="mt-3 font-heading text-lg font-semibold text-ink/40 dark:text-ink-dark/40">Sem dado ainda</p>
+  ) : (
+    <p class="mt-2 font-heading text-4xl font-bold text-ink-heading dark:text-ink-dark-heading">
+      {valor.toLocaleString('pt-BR')}
+      {unidade && <span class="ml-1 text-base font-medium text-ink dark:text-ink-dark">{unidade}</span>}
+    </p>
+  )}
+
+  {ano && <p class="mt-1 font-mono text-[11px] text-ink/50 dark:text-ink-dark/50">{ano}</p>}
+</div>

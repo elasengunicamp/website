@@ -4,9 +4,18 @@ export interface Props {
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'default' | 'lg';
   class?: string;
+  target?: '_blank' | '_self';
+  rel?: string;
 }
 
-const { href, variant = 'primary', size = 'default', class: className } = Astro.props;
+const {
+  href,
+  variant = 'primary',
+  size = 'default',
+  class: className,
+  target,
+  rel = target === '_blank' ? 'noopener noreferrer' : undefined,
+} = Astro.props;
 
 const variantClasses = {
   primary:
@@ -27,6 +36,8 @@ const Tag = href ? 'a' : 'button';
 
 <Tag
   href={href}
+  target={target}
+  rel={rel}
   class:list={[
     'inline-flex items-center justify-center rounded-full font-body font-semibold transition-colors',
     variantClasses[variant],

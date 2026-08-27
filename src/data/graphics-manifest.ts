@@ -39,7 +39,11 @@ export const textures: GraphicVariant[] = [
   { file: 'textures/48.png', tags: ['unreviewed'] },
   { file: 'textures/50.png', tags: ['unreviewed'] },
   { file: 'textures/51.png', tags: ['unreviewed'] },
-  { file: 'textures/52.png', tags: ['unreviewed'] },
+  {
+    file: 'textures/52.png',
+    tags: ['washi-tape', 'gingham', 'lilac'],
+    descricao: 'Fita washi xadrez gingham lilás/branco — usada como acento decorativo nas capas do blog',
+  },
   { file: 'textures/53.png', tags: ['unreviewed'] },
 ];
 
@@ -85,8 +89,8 @@ export const icons: GraphicVariant[] = [
     descricao:
       'Pin/tachinha lilás, render 3D — motivo "mural de cortiça" pra cards de Ações, ' +
       'recortado e sem fundo em public/images/decor/sticker-pushpin.webp (usado em /acoes). ' +
-      'Também usado direto (sem recorte) via /graphics/icons/17.png pra "fixar" cards de ' +
-      'citação em /pesquisa.',
+      'Também usado direto (sem recorte, PNG com fundo transparente) via /graphics/icons/17.png ' +
+      'pra "fixar" cards de citação em /pesquisa.',
   },
   {
     file: 'icons/18.png',

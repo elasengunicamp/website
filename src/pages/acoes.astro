@@ -1,0 +1,71 @@
+---
+// Listagem de Ações (NOTES.md — "Visitas à escolas, aniversário do Elas,
+// dia da mulher..."). Rascunho visual aprovado no /design antes de codar
+// (ver PR): frame sticker + halftone na capa, mural de tachinha no topo.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import StickerFrame from '../components/ui/StickerFrame.astro';
+import HalftonePhoto from '../components/ui/HalftonePhoto.astro';
+import Badge from '../components/ui/Badge.astro';
+import { accentForTag, acaoDateFormatter } from '../lib/acoes';
+
+const acoes = (await getCollection('acoes')).sort(
+  (a, b) => b.data.data.valueOf() - a.data.data.valueOf(),
+);
+
+const tilts = [-2, 1, -1, 2, -2, 1] as const;
+---
+
+<BaseLayout title="Ações" description="Visitas a escolas, aniversário do Elas, Dia da Mulher e outras ações do Elas na Engenharia.">
+  <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <img
+      src="/images/decor/sticker-pushpin.webp"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute left-1/2 top-4 hidden w-14 -translate-x-1/2 -rotate-6 sm:block"
+    />
+
+    <SectionHeading eyebrow="O que a gente faz" align="center" class="mx-auto max-w-2xl">
+      Ações
+    </SectionHeading>
+    <p class="mx-auto mt-4 max-w-2xl text-center font-body text-base text-ink dark:text-ink-dark">
+      Visitas a escolas, aniversário do Elas, Dia da Mulher — um retrato de cada atividade, em ordem cronológica.
+    </p>
+
+    {acoes.length === 0 ? (
+      <p class="mt-16 text-center font-body text-ink dark:text-ink-dark">
+        Nenhuma ação publicada ainda — volte em breve.
+      </p>
+    ) : (
+      <div class="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        {acoes.map((acao, i) => (
+          <a href={`/acoes/${acao.id}`} class="group flex flex-col gap-4">
+            <StickerFrame tilt={tilts[i % tilts.length]} class="self-start">
+              <HalftonePhoto
+                src={acao.data.cover}
+                alt={acao.data.titulo}
+                class="h-48 w-full rounded-[calc(var(--radius-sticker)-6px)] sm:w-72"
+              />
+            </StickerFrame>
+            <div class="flex flex-col gap-2 px-1">
+              <h3 class="font-heading text-lg font-bold text-ink-heading transition-colors group-hover:text-brand/80 dark:text-ink-dark-heading">
+                {acao.data.titulo}
+              </h3>
+              <p class="font-mono text-xs text-ink/70 dark:text-ink-dark/70">
+                {acaoDateFormatter.format(acao.data.data)}
+              </p>
+              {acao.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2">
+                  {acao.data.tags.map((tag) => (
+                    <Badge accent={accentForTag(tag)}>{tag}</Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</BaseLayout>

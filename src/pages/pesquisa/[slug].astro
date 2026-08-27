@@ -1,0 +1,99 @@
+---
+// Detalhe de uma indicação de "Pesquisa/Elas indica" — lido como ficha de
+// citação: metadados acadêmicos em destaque (autores, veículo, DOI) antes do
+// resumo, CTA final pro link externo do artigo/evento.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/ui/Button.astro';
+import { formatarData } from '../../lib/date';
+
+// A coleção "pesquisa" não tem campo de corpo/markdown no CMS (ver
+// public/admin/config.yml) — só metadados de citação + resumo. Por isso não
+// renderizamos render(entry)/<Content /> aqui, diferente de /blog/[slug].
+export async function getStaticPaths() {
+  const indicacoes = await getCollection('pesquisa');
+  return indicacoes.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { titulo, autores, revistaOuEvento, doi, data, resumo, link } = entry.data;
+
+function doiUrl(d: string) {
+  return d.startsWith('http') ? d : `https://doi.org/${d}`;
+}
+---
+
+<BaseLayout title={titulo} description={resumo}>
+  <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <a
+      href="/pesquisa"
+      class="inline-flex items-center gap-1.5 font-body text-sm font-semibold text-brand hover:text-accent-purple dark:text-brand-lilac"
+    >
+      ← Pesquisa
+    </a>
+
+    <article class="relative mt-6 rounded-sticker border-4 border-white bg-white p-8 shadow-sticker dark:border-brand-dark-surface dark:bg-brand-dark-surface sm:p-10">
+      <img
+        src="/graphics/icons/17.png"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute -top-6 left-10 w-14 -rotate-6 drop-shadow-md"
+      />
+
+      <p class="font-mono text-xs tracking-wide text-accent-purple">{formatarData(data, 'longa')}</p>
+
+      <h1 class="mt-3 font-heading text-2xl font-bold leading-tight text-ink-heading dark:text-ink-dark-heading sm:text-3xl">
+        {titulo}
+      </h1>
+
+      <dl class="mt-6 space-y-2 rounded-2xl bg-brand-lilac/40 p-5 dark:bg-brand-dark/60">
+        <div class="flex flex-col gap-1 sm:flex-row sm:gap-3">
+          <dt class="min-w-28 font-body text-sm font-bold text-ink-heading dark:text-ink-dark-heading">
+            {autores.length > 1 ? 'Autoras/es' : 'Autoria'}
+          </dt>
+          <dd class="font-body text-sm text-ink dark:text-ink-dark">{autores.join(', ')}</dd>
+        </div>
+        {revistaOuEvento && (
+          <div class="flex flex-col gap-1 sm:flex-row sm:gap-3">
+            <dt class="min-w-28 font-body text-sm font-bold text-ink-heading dark:text-ink-dark-heading">
+              Publicado em
+            </dt>
+            <dd class="font-body text-sm italic text-ink dark:text-ink-dark">{revistaOuEvento}</dd>
+          </div>
+        )}
+        {doi && (
+          <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+            <dt class="min-w-28 font-body text-sm font-bold text-ink-heading dark:text-ink-dark-heading">DOI</dt>
+            <dd>
+              <a
+                href={doiUrl(doi)}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 rounded-full bg-accent-purple/15 px-3 py-1 font-mono text-xs text-accent-purple hover:bg-accent-purple/25"
+              >
+                {doi} ↗
+              </a>
+            </dd>
+          </div>
+        )}
+      </dl>
+
+      <h2 class="mt-8 font-heading text-sm font-bold uppercase tracking-wide text-brand dark:text-brand-lilac">
+        Resumo
+      </h2>
+      <p class="mt-2 font-body text-base leading-relaxed text-ink dark:text-ink-dark">{resumo}</p>
+
+      {link && (
+        <div class="mt-10 flex flex-wrap items-center gap-3 border-t border-dashed border-brand/20 pt-6 dark:border-brand-lilac/20">
+          <Button href={link} variant="primary" target="_blank">
+            Acessar artigo completo →
+          </Button>
+          <span class="font-body text-xs text-ink/60 dark:text-ink-dark/60">Link externo — abre em nova aba</span>
+        </div>
+      )}
+    </article>
+  </div>
+</BaseLayout>

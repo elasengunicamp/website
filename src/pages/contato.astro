@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StickerFrame from '../components/ui/StickerFrame.astro';
+import WindowChrome from '../components/ui/WindowChrome.astro';
+import Badge from '../components/ui/Badge.astro';
+import type { Tilt } from '../components/ui/StickerFrame.astro';
+
+// Mesma ideia dos socials do Footer.astro, mas com dados/ícones próprios
+// desta página — não importamos o Footer aqui (arquivo compartilhado, fora
+// do escopo desta unidade).
+const email = 'contato@elasnaengenharia.com.br';
+
+const socials = [
+  {
+    label: 'Instagram',
+    href: 'https://instagram.com/elasnaengenharia.unicamp',
+    icon: 'instagram' as const,
+  },
+  {
+    label: 'YouTube',
+    href: 'https://youtube.com/@elasnaengenharia',
+    icon: 'youtube' as const,
+  },
+  {
+    label: 'E-mail',
+    href: `mailto:${email}`,
+    icon: 'email' as const,
+  },
+];
+
+const tilts: Tilt[] = [-3, 2, -1];
+---
+
+<BaseLayout
+  title="Contato"
+  description="Fale com o Elas na Engenharia — agende uma visita ou palestra pra sua escola, ou tire dúvidas por e-mail."
+>
+  <!-- HERO -->
+  <section class="relative overflow-hidden px-4 pb-10 pt-16 sm:px-6 sm:pt-20">
+    <div class="mx-auto max-w-3xl">
+      <Badge accent="purple">Contato</Badge>
+      <h1 class="mt-5 font-heading text-4xl font-bold text-ink-heading dark:text-ink-dark-heading sm:text-5xl">
+        Fale <span class="font-script text-4xl font-normal text-brand dark:text-brand-lilac sm:text-5xl">com a gente</span>
+      </h1>
+      <p class="mt-5 max-w-xl font-body text-lg leading-relaxed text-ink dark:text-ink-dark">
+        Professora, coordenadora ou gestora escolar? A gente adora conversar sobre uma visita, uma
+        palestra ou uma parceria com a sua escola.
+      </p>
+    </div>
+
+    <StickerFrame tilt={2} class="pointer-events-none absolute right-6 top-10 hidden sm:block">
+      <p class="px-4 py-2 font-mono text-xs font-bold text-brand dark:text-ink-dark-heading">
+        Foco: Escolas
+      </p>
+    </StickerFrame>
+  </section>
+
+  <!-- CTA E-MAIL -->
+  <section class="bg-brand-lilac px-4 py-16 dark:bg-brand-dark-surface sm:px-6">
+    <div class="mx-auto max-w-xl">
+      <WindowChrome title="contato.exe">
+        <div class="flex flex-col items-center gap-3 p-2 text-center sm:p-4">
+          <p class="font-body text-xs font-semibold uppercase tracking-widest text-accent-purple">
+            Canal principal
+          </p>
+          <p class="break-all font-mono text-lg font-bold text-ink-heading dark:text-ink-dark-heading sm:text-xl">
+            {email}
+          </p>
+          <a
+            href={`mailto:${email}`}
+            class="mt-2 inline-flex items-center justify-center rounded-full bg-brand px-8 py-3 font-body text-base font-semibold text-brand-cream transition-colors hover:bg-brand/90 dark:bg-brand-lilac dark:text-brand-dark dark:hover:bg-brand-lilac/90"
+          >
+            Enviar e-mail
+          </a>
+          <p class="font-body text-sm text-ink/70 dark:text-ink-dark/70">
+            Resposta em até 3 dias úteis.
+          </p>
+        </div>
+      </WindowChrome>
+    </div>
+  </section>
+
+  <!-- REDES SOCIAIS -->
+  <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+    <p class="text-center font-body text-xs font-semibold uppercase tracking-widest text-accent-purple">
+      Nossas redes
+    </p>
+
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-6">
+      {socials.map((social, i) => (
+        <StickerFrame tilt={tilts[i % tilts.length]}>
+          <a
+            href={social.href}
+            target={social.href.startsWith('http') ? '_blank' : undefined}
+            rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            class="flex items-center gap-3 px-6 py-4"
+          >
+            {social.icon === 'instagram' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+                <circle cx="12" cy="12" r="4"></circle>
+                <circle cx="17.5" cy="6.5" r="1"></circle>
+              </svg>
+            )}
+            {social.icon === 'youtube' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
+                <rect x="2" y="5" width="20" height="14" rx="4"></rect>
+                <path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"></path>
+              </svg>
+            )}
+            {social.icon === 'email' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="3"></rect>
+                <path d="M3 6l9 7 9-7"></path>
+              </svg>
+            )}
+            <span class="font-heading text-base font-bold text-ink-heading dark:text-ink-dark-heading">
+              {social.label}
+            </span>
+          </a>
+        </StickerFrame>
+      ))}
+    </div>
+  </section>
+
+  <!-- OUTROS CONTATOS -->
+  <section class="mx-auto max-w-3xl px-4 pb-20 sm:px-6">
+    <div class="rounded-2xl bg-white/60 p-8 text-center dark:bg-brand-dark-surface/60">
+      <h2 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+        Parcerias, imprensa ou outras dúvidas?
+      </h2>
+      <p class="mt-2 font-body text-sm leading-relaxed text-ink dark:text-ink-dark">
+        Escreve pro mesmo e-mail contando o que precisa — a gente direciona pra pessoa certa da equipe.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

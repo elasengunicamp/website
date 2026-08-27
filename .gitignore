@@ -26,3 +26,6 @@ design-source/
 
 # jetbrains setting folder
 .idea/
+
+# claude code local state (agent worktrees, session data)
+.claude/

@@ -184,3 +184,38 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .hero-float-a {
+    animation: float-a 7s ease-in-out infinite;
+  }
+  .hero-float-b {
+    animation: float-b 8.5s ease-in-out infinite;
+  }
+
+  @keyframes float-a {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-3deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(-1deg);
+    }
+  }
+  @keyframes float-b {
+    0%,
+    100% {
+      transform: translateY(0) rotate(2deg);
+    }
+    50% {
+      transform: translateY(12px) rotate(4deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-float-a,
+    .hero-float-b {
+      animation: none;
+    }
+  }
+</style>

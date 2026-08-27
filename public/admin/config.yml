@@ -1,4 +1,3 @@
-# Config do Sveltia CMS (compatível com o formato Decap/Netlify CMS).
 # Backend: GitHub direto no repo. OAuth via proxy Cloudflare Worker separado
 # (sveltia-cms-auth) — ver PROJECT-NOTES.md pra status do deploy do proxy.
 backend:

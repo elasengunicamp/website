@@ -1,0 +1,70 @@
+---
+// Blog de marketing — posts/entrevistas diversas (NOTES.md). Conteúdo
+// distinto de /pesquisa (ver content.config.ts). Capa em tratamento halftone
+// via HalftonePhoto.astro; o post mais recente ganha um acento de fita washi
+// (public/graphics/textures/52.png — revisado, ver graphics-manifest.ts).
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Badge from '../../components/ui/Badge.astro';
+import HalftonePhoto from '../../components/ui/HalftonePhoto.astro';
+import { formatarData } from '../../lib/date';
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf());
+---
+
+<BaseLayout title="Blog" description="Posts, entrevistas e bastidores do Elas na Engenharia.">
+  <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <SectionHeading eyebrow="Blog">Novidades e bastidores</SectionHeading>
+    <p class="mt-4 max-w-2xl font-body text-base text-ink dark:text-ink-dark">
+      Posts, entrevistas e histórias do Elas na Engenharia contadas pelo time de marketing.
+    </p>
+
+    {posts.length === 0 && (
+      <p class="mt-12 font-body text-sm text-ink dark:text-ink-dark">Nenhum post publicado ainda.</p>
+    )}
+
+    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {posts.map((post, i) => {
+        const { titulo, autor, cover, resumo, tags, data } = post.data;
+        return (
+          <a
+            href={`/blog/${post.id}`}
+            class:list={[
+              'block overflow-hidden rounded-2xl border border-brand/10 bg-white shadow-sticker transition-transform hover:-translate-y-0.5 dark:border-brand-lilac/10 dark:bg-brand-dark-surface',
+              i % 2 === 0 ? '-rotate-1' : 'rotate-1',
+              'hover:rotate-0',
+            ]}
+          >
+            <div class="relative h-40 overflow-hidden">
+              <HalftonePhoto src={cover} alt={titulo} class="h-full w-full" />
+              {i === 0 && (
+                <img
+                  src="/graphics/textures/52.png"
+                  alt=""
+                  aria-hidden="true"
+                  class="pointer-events-none absolute -top-3 left-1/2 w-24 -translate-x-1/2 -rotate-3 opacity-95"
+                />
+              )}
+            </div>
+            <div class="p-5">
+              {tags.length > 0 && (
+                <div class="mb-2 flex flex-wrap gap-1.5">
+                  {tags.map((tag) => <Badge accent="blue">{tag}</Badge>)}
+                </div>
+              )}
+              <h3 class="font-heading text-base font-bold leading-snug text-ink-heading dark:text-ink-dark-heading">
+                {titulo}
+              </h3>
+              <p class="mt-2 line-clamp-2 font-body text-sm text-ink dark:text-ink-dark">{resumo}</p>
+              <div class="mt-4 flex items-center justify-between border-t border-brand/10 pt-3 font-body text-xs text-ink/70 dark:border-brand-lilac/10 dark:text-ink-dark/70">
+                <span>{autor}</span>
+                <span>{formatarData(data)}</span>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</BaseLayout>

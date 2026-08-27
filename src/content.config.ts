@@ -57,7 +57,7 @@ const pesquisa = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pesquisa' }),
   schema: z.object({
     titulo: z.string(),
-    autores: z.array(z.string()),
+    autores: z.array(z.string()).min(1),
     revistaOuEvento: z.string().optional(),
     doi: z.string().optional(),
     data: z.coerce.date(),
@@ -66,9 +66,10 @@ const pesquisa = defineCollection({
   }),
 });
 
-// Blog — posts de MKT/entrevistas
+// Blog — posts de MKT/entrevistas. Corpo renderiza como MDX (@astrojs/mdx já
+// configurado em astro.config.mjs) — glob aceita .md e .mdx.
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     titulo: z.string(),
     data: z.coerce.date(),
@@ -96,7 +97,11 @@ const metricas = defineCollection({
   schema: z.object({
     id: z.string(),
     label: z.string(),
-    valor: z.number(),
+    // Opcional de propósito: omitir valor (em vez de gravar 0) é como o CMS
+    // marca "ainda não medido" — ver StatTile/Meter, que tratam 0 como um
+    // valor real e undefined como "sem dado ainda" (achado de code review:
+    // tratar 0 como sentinela esconderia uma métrica que zerou de verdade).
+    valor: z.number().optional(),
     unidade: z.string().optional(),
     categoria: z.enum(['projeto', 'universidade', 'engenharia']),
     ano: z.number().optional(),

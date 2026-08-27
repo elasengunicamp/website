@@ -1,0 +1,89 @@
+---
+// Detalhe de uma Ação — capa + corpo (Markdown do CMS) + galeria.
+// Layout aprovado no /design antes de codar (ver PR).
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StickerFrame from '../../components/ui/StickerFrame.astro';
+import HalftonePhoto from '../../components/ui/HalftonePhoto.astro';
+import Badge from '../../components/ui/Badge.astro';
+import { accentForTag, acaoDateFormatter } from '../../lib/acoes';
+
+export async function getStaticPaths() {
+  const acoes = await getCollection('acoes');
+  return acoes.map((acao) => ({
+    params: { slug: acao.id },
+    props: { acao },
+  }));
+}
+
+const { acao } = Astro.props;
+const { Content } = await render(acao);
+
+const galleryTilts = [-3, 2, -1, 3, -2, 1] as const;
+---
+
+<BaseLayout title={acao.data.titulo} description={acao.data.descricao}>
+  <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <a
+      href="/acoes"
+      class="inline-flex items-center gap-1.5 font-heading text-sm font-semibold text-brand transition-colors hover:text-accent-purple dark:text-brand-lilac"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      Ações
+    </a>
+
+    <StickerFrame tilt={-1} class="mt-7 block">
+      <HalftonePhoto
+        src={acao.data.cover}
+        alt={acao.data.titulo}
+        class="h-72 w-full rounded-[calc(var(--radius-sticker)-6px)] sm:h-96"
+      />
+    </StickerFrame>
+
+    <div class="mt-7 flex flex-col gap-3">
+      <h1 class="font-heading text-3xl font-bold text-ink-heading dark:text-ink-dark-heading sm:text-4xl">
+        {acao.data.titulo}
+      </h1>
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="font-mono text-xs text-ink/70 dark:text-ink-dark/70">
+          {acaoDateFormatter.format(acao.data.data)}
+        </span>
+        {acao.data.tags.map((tag) => (
+          <Badge accent={accentForTag(tag)}>{tag}</Badge>
+        ))}
+      </div>
+    </div>
+
+    <div
+      class:list={[
+        'mt-8 flex flex-col gap-4 font-body text-base leading-relaxed text-ink dark:text-ink-dark',
+        '[&_h2]:font-heading [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-ink-heading [&_h2]:dark:text-ink-dark-heading',
+        '[&_h3]:font-heading [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-ink-heading [&_h3]:dark:text-ink-dark-heading',
+        '[&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5',
+        '[&_strong]:font-semibold [&_a]:text-brand [&_a]:underline [&_a]:dark:text-brand-lilac [&_a:hover]:text-accent-purple',
+        '[&_blockquote]:border-l-4 [&_blockquote]:border-brand-lilac [&_blockquote]:pl-4 [&_blockquote]:italic',
+      ]}
+    >
+      <Content />
+    </div>
+
+    {acao.data.galeria.length > 0 && (
+      <div class="mt-14">
+        <h2 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">Galeria</h2>
+        <div class="mt-5 flex flex-wrap gap-6">
+          {acao.data.galeria.map((imagem, i) => (
+            <StickerFrame tilt={galleryTilts[i % galleryTilts.length]}>
+              <HalftonePhoto
+                src={imagem}
+                alt={`${acao.data.titulo} — foto ${i + 1}`}
+                class="h-36 w-36 rounded-[calc(var(--radius-sticker)-6px)]"
+              />
+            </StickerFrame>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</BaseLayout>

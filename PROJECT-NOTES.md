@@ -10,6 +10,7 @@ avança; não é histórico (isso é o git log), é o estado atual do que falta 
 | Interatividade | React instalado (`@astrojs/react`) | Libera ReactBits/Aceternity/`@react-three/fiber` como islands. |
 | CMS | Sveltia CMS, backend GitHub, `editorial_workflow` | Config-compatível com Decap, mais leve e ativamente mantido. Editar cria PR, não commita direto na main. |
 | Escopo desta rodada | Content collections + CMS + gráficos pra todas as seções do NOTES.md, com conteúdo placeholder | Permite construir as páginas de cada seção em paralelo depois. |
+| Copy editável no CMS | Singletons `home` + `config` (`src/content/paginas/*.yaml`). Homepage em campos estruturados; nav fica no código; rodapé/SEO padrão no CMS. | Autonomia da equipe onde muda em ritmo de conteúdo; ver "Threshold" abaixo. |
 | Hospedagem | **Em aberto** | Projeto vai passar pra outra conta — não decidir/hospedar usando as ferramentas Vercel desta sessão. Cloudflare Pages/Netlify/Vercel seguem como opções pra quem for gerenciar o deploy. |
 | OAuth do CMS | Proxy `sveltia-cms-auth` em Cloudflare Worker (gratuito, template oficial) | Independente de onde o site final for hospedado. |
 
@@ -39,6 +40,45 @@ avança; não é histórico (isso é o git log), é o estado atual do que falta 
   (Início, Dados, Ações, Parcerias, Pesquisa, Blog, Escolas, Contato), substituindo os links antigos
   de fase 0 (`/vestibular`, `/sobre`) que não correspondiam a nenhuma seção do brief. Rótulos/ordem
   são um palpite razoável, não confirmado com o time — revisar antes de considerar definitivo.
+
+## Threshold: o que é editável no CMS vs fica no código
+
+Uma string vai pro **CMS** só se Q1–Q3 = sim **e** Q4 = seguro. Senão fica no **código**.
+
+1. **Dono** — integrante/MKT plausivelmente quer mudar sozinha, sem dev?
+2. **Cadência** — muda em ritmo de *conteúdo* (campanha, semestre, novo parceiro, rebrand),
+   não de *dev* (refactor, nova página, mudança de layout)?
+3. **Conteúdo vs scaffolding** — é uma frase que a organização *diz* (prosa, headings, texto
+   de CTA), não fiação de UI (paths de rota, `aria-label`, validação, loading/empty/error)?
+4. **Veto de segurança** — se o editor colar besteira, o estrago fica confinado ao bloco? Sem
+   layout quebrado, sem rota morta, sem build quebrado, sem regressão de acessibilidade.
+
+`editorial_workflow` (todo edit = PR revisável) é a rede que deixa casos "borderline mas
+baratos" penderem pro CMS.
+
+- **No CMS**: homepage (`home.yaml` — hero, quem somos, história, MVV, headings/intros de
+  seção, blocos CTA), rodapé (`config.yaml` — redes, e-mail, copyright), SEO padrão + nome da
+  org (`config.yaml`), override de SEO da home (`home.seo`). Fotos/nomes/áreas de membros e
+  posts de blog já vêm das collections.
+- **No código**: rótulos e hrefs do nav (acoplados a rota, IA não confirmada), `title` por
+  rota, labels de `Button`/`aria-label`/`ThemeToggle`, textos de validação/loading/empty/error,
+  página 404.
+- **`src/i18n/ui.ts`**: não criado (YAGNI — site single-locale, microcopy de código é pouca e
+  não duplicada). Revisitar se pedirem 2º locale ou a mesma string aparecer em 3+ componentes.
+
+## Convenção: refinamento Zod ↔ `pattern` do Sveltia (não deixar divergir)
+
+Campo com refinamento de formato no schema Zod (`.url()`, `.email()`) **tem que** espelhar esse
+refinamento no `public/admin/config.yml` via `pattern` no widget string — senão o CMS aceita
+valor que o `astro build` depois rejeita. Preferir `z.string()` puro pra qualquer coisa que
+possa ser path relativo (`/acoes`) ou `mailto:`.
+
+- CTA hrefs da home (`hero.ctaPrimario.href`, `ctaAcoes.href`, `ctaParcerias.href`) e
+  `config.redes[].href`: `z.string()` puro + `widget: string`. **Não** usar `.url()`.
+- `config.email`: `z.string().email()` no Zod **+** `pattern` no widget, mantidos em sync.
+- Drift pré-existente resolvido nesta rodada: `parceiros.link` e `pesquisa.link` ganharam
+  `pattern` no `config.yml` espelhando o `z.string().url()` (e a variante que aceita vazio) do
+  schema.
 
 ## Riscos a verificar na implementação
 

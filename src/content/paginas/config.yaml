@@ -1,0 +1,19 @@
+# Configurações gerais do site — editável no painel visual (Sveltia CMS).
+# Objeto no nível raiz (NÃO lista) — exigência do formato "files collection" do Sveltia.
+orgNome: Elas na Engenharia
+tituloSufixo: Elas na Engenharia
+metaDescricaoPadrao: >-
+  Elas na Engenharia — projeto de extensão da Unicamp/FEM que promove equidade de
+  gênero nas engenharias.
+email: contato@elasnaengenharia.com.br
+copyrightTexto: Elas na Engenharia — FEM/Unicamp. Projeto de extensão.
+redes:
+  - label: Instagram
+    href: https://instagram.com/elasnaengenharia.unicamp
+    tipo: instagram
+  - label: YouTube
+    href: https://youtube.com/@elasnaengenharia
+    tipo: youtube
+  - label: E-mail
+    href: mailto:contato@elasnaengenharia.com.br
+    tipo: email

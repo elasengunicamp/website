@@ -1,19 +1,186 @@
 ---
+import { getEntry, getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+
+const home = (await getEntry('paginas', 'home'))!.data;
+
+const areas = (await getCollection('areas')).sort(
+  (a, b) => a.data.ordem - b.data.ordem,
+);
+const membros = (await getCollection('membros')).sort(
+  (a, b) => a.data.ordem - b.data.ordem,
+);
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf())
+  .slice(0, 6);
+
+const membrosPorArea = areas.map((area) => ({
+  area,
+  pessoas: membros.filter((m) => m.data.area.id === area.id),
+}));
+
+const paras = (texto: string) =>
+  texto.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+const dateFmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' });
+
+const seoDescricao = home.seo?.descricao?.trim() || undefined;
 ---
 
-<BaseLayout title="Início">
+<BaseLayout title="Início" description={seoDescricao}>
+  <!-- Hero -->
   <section class="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6">
     <h1 class="font-heading text-4xl font-bold text-ink-heading dark:text-ink-dark-heading sm:text-5xl">
       Elas na <span class="font-script text-brand dark:text-brand-lilac">Engenharia</span>
     </h1>
     <p class="mt-4 font-body text-lg text-ink dark:text-ink-dark">
-      Site em construção — Fase 0: fundação de identidade visual (cores, tipografia, dark mode).
+      {home.hero.subtitulo}
     </p>
-    <div class="mx-auto mt-10 grid max-w-md grid-cols-3 gap-3">
-      <div class="h-16 rounded-sticker bg-brand-cream shadow-sticker"></div>
-      <div class="h-16 rounded-sticker bg-brand shadow-sticker"></div>
-      <div class="h-16 rounded-sticker bg-brand-lilac shadow-sticker"></div>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <Button href={home.hero.ctaPrimario.href} size="lg">
+        {home.hero.ctaPrimario.label}
+      </Button>
+      {home.hero.ctaSecundario && (
+        <Button href={home.hero.ctaSecundario.href} variant="ghost" size="lg">
+          {home.hero.ctaSecundario.label}
+        </Button>
+      )}
+    </div>
+  </section>
+
+  <!-- Quem somos + Nossa história -->
+  <section class="mx-auto grid max-w-5xl gap-12 px-4 py-12 sm:px-6 md:grid-cols-2">
+    <div>
+      <SectionHeading>{home.quemSomos.titulo}</SectionHeading>
+      <div class="mt-4 space-y-3 font-body text-ink dark:text-ink-dark">
+        {paras(home.quemSomos.corpo).map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+    <div>
+      <SectionHeading>{home.historia.titulo}</SectionHeading>
+      <div class="mt-4 space-y-3 font-body text-ink dark:text-ink-dark">
+        {paras(home.historia.corpo).map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Missão, visão e valores -->
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div class="grid gap-6 md:grid-cols-2">
+      <Card>
+        <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          {home.mvv.missaoTitulo}
+        </h3>
+        <p class="mt-2 font-body text-ink dark:text-ink-dark">{home.mvv.missao}</p>
+      </Card>
+      <Card>
+        <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          {home.mvv.visaoTitulo}
+        </h3>
+        <p class="mt-2 font-body text-ink dark:text-ink-dark">{home.mvv.visao}</p>
+      </Card>
+    </div>
+    {home.mvv.valores.length > 0 && (
+      <div class="mt-8">
+        <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          {home.mvv.valoresTitulo}
+        </h3>
+        <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {home.mvv.valores.map((v) => (
+            <li>
+              <p class="font-body font-semibold text-ink-heading dark:text-ink-dark-heading">
+                {v.titulo}
+              </p>
+              <p class="font-body text-sm text-ink dark:text-ink-dark">{v.descricao}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </section>
+
+  <!-- Áreas e membros -->
+  {membros.length > 0 && (
+    <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <SectionHeading eyebrow={home.areasSection.intro}>
+        {home.areasSection.titulo}
+      </SectionHeading>
+      <div class="mt-6 space-y-8">
+        {membrosPorArea
+          .filter((g) => g.pessoas.length > 0)
+          .map((g) => (
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+                {g.area.data.nome}
+              </h3>
+              <ul class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {g.pessoas.map((m) => (
+                  <li class="flex items-center gap-3">
+                    <img
+                      src={m.data.foto}
+                      alt={m.data.nome}
+                      width="48"
+                      height="48"
+                      class="h-12 w-12 rounded-full object-cover"
+                    />
+                    <span>
+                      <span class="block font-body font-semibold text-ink-heading dark:text-ink-dark-heading">
+                        {m.data.nome}
+                      </span>
+                      {m.data.cargo && (
+                        <span class="block font-body text-sm text-ink dark:text-ink-dark">
+                          {m.data.cargo}
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Blog -->
+  {posts.length > 0 && (
+    <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <SectionHeading eyebrow={home.blogSection.intro}>
+        {home.blogSection.titulo}
+      </SectionHeading>
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        {posts.map((post) => (
+          <Card href={`/blog/${post.id}`}>
+            <p class="font-body text-xs text-ink/70 dark:text-ink-dark/70">
+              {dateFmt.format(post.data.data)}
+            </p>
+            <h3 class="mt-1 font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+              {post.data.titulo}
+            </h3>
+            <p class="mt-2 font-body text-sm text-ink dark:text-ink-dark">
+              {post.data.resumo}
+            </p>
+          </Card>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Chamadas -->
+  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+    <div class="grid gap-6 md:grid-cols-2">
+      {[home.ctaAcoes, home.ctaParcerias].map((cta) => (
+        <Card>
+          <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+            {cta.titulo}
+          </h3>
+          <p class="mt-2 font-body text-ink dark:text-ink-dark">{cta.texto}</p>
+          <Button href={cta.href} class="mt-4">{cta.label}</Button>
+        </Card>
+      ))}
     </div>
   </section>
 </BaseLayout>

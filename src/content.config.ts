@@ -103,6 +103,93 @@ const metricas = defineCollection({
   }),
 });
 
+// Conteúdo institucional editável no CMS (singletons).
+// glob() sobre um arquivo específico -> 1 entrada por arquivo, objeto no nível
+// raiz (evita o problema de lista-raiz do metricas.yaml, que impede file collection
+// no Sveltia). file() NÃO serve aqui: em objeto flat trataria cada chave top-level
+// como entrada separada.
+const paginas = defineCollection({
+  loader: glob({ pattern: 'home.yaml', base: './src/content/paginas' }),
+  schema: z.object({
+    hero: z.object({
+      titulo: z.string(),
+      subtitulo: z.string(),
+      // href relativo (rota interna) -> z.string() puro, NÃO .url() (ver convenção em PROJECT-NOTES.md)
+      ctaPrimario: z.object({ label: z.string(), href: z.string() }),
+      ctaSecundario: z.object({ label: z.string(), href: z.string() }).optional(),
+    }),
+    quemSomos: z.object({
+      titulo: z.string().default('Quem somos'),
+      corpo: z.string(),
+    }),
+    historia: z.object({
+      titulo: z.string().default('Nossa história'),
+      corpo: z.string(),
+    }),
+    mvv: z.object({
+      missaoTitulo: z.string().default('Missão'),
+      missao: z.string(),
+      visaoTitulo: z.string().default('Visão'),
+      visao: z.string(),
+      valoresTitulo: z.string().default('Valores'),
+      valores: z
+        .array(z.object({ titulo: z.string(), descricao: z.string() }))
+        .default([]),
+    }),
+    areasSection: z.object({
+      titulo: z.string().default('Áreas e membros'),
+      intro: z.string().optional(),
+    }),
+    blogSection: z.object({
+      titulo: z.string().default('Do nosso blog'),
+      intro: z.string().optional(),
+    }),
+    ctaAcoes: z.object({
+      titulo: z.string(),
+      texto: z.string(),
+      label: z.string(),
+      href: z.string(),
+    }),
+    ctaParcerias: z.object({
+      titulo: z.string(),
+      texto: z.string(),
+      label: z.string(),
+      href: z.string(),
+    }),
+    seo: z
+      .object({
+        titulo: z.string().optional(),
+        descricao: z.string().optional(),
+      })
+      .optional(),
+  }),
+});
+
+// Configurações globais (rodapé, contato, SEO padrão, marca) — singleton.
+const site = defineCollection({
+  loader: glob({ pattern: 'config.yaml', base: './src/content/paginas' }),
+  schema: z.object({
+    orgNome: z.string().default('Elas na Engenharia'),
+    tituloSufixo: z.string().default('Elas na Engenharia'),
+    metaDescricaoPadrao: z.string(),
+    // único campo onde check de formato paga -> espelhado por `pattern` no config.yml
+    email: z.string().email(),
+    copyrightTexto: z.string(), // render: © {ano} {copyrightTexto}
+    redes: z
+      .array(
+        z.object({
+          label: z.string(),
+          // aceita https:// e mailto: -> z.string() frouxo, NÃO .url()
+          href: z.string(),
+          tipo: z
+            .enum(['instagram', 'youtube', 'linkedin', 'email', 'outro'])
+            .default('outro'),
+        }),
+      )
+      .default([]),
+  }),
+});
+
 export const collections = {
   areas,
   membros,
@@ -112,4 +199,6 @@ export const collections = {
   blog,
   'escolas-videos': escolasVideos,
   metricas,
+  paginas, // entrada única: id "home"
+  site, // entrada única: id "config"
 };

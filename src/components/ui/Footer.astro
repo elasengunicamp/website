@@ -1,17 +1,25 @@
 ---
+import { getEntry } from 'astro:content';
+
 const currentYear = new Date().getFullYear();
 
-const socials = [
-  { label: 'Instagram', href: 'https://instagram.com/elasnaengenharia.unicamp' },
-  { label: 'YouTube', href: 'https://youtube.com/@elasnaengenharia' },
-  { label: 'E-mail', href: 'mailto:contato@elasnaengenharia.com.br' },
+// Rodapé editável no CMS (singleton "config"). Fallback hardcoded pra build
+// nunca quebrar se o singleton faltar ou for inválido.
+const site = (await getEntry('site', 'config'))?.data;
+
+const socials = site?.redes ?? [
+  { label: 'Instagram', href: 'https://instagram.com/elasnaengenharia.unicamp', tipo: 'instagram' },
+  { label: 'YouTube', href: 'https://youtube.com/@elasnaengenharia', tipo: 'youtube' },
+  { label: 'E-mail', href: 'mailto:contato@elasnaengenharia.com.br', tipo: 'email' },
 ];
+const copyright =
+  site?.copyrightTexto ?? 'Elas na Engenharia — FEM/Unicamp. Projeto de extensão.';
 ---
 
 <footer class="bg-brand text-brand-cream dark:bg-brand-dark-surface">
   <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
     <p class="font-body text-sm">
-      &copy; {currentYear} Elas na Engenharia — FEM/Unicamp. Projeto de extensão.
+      &copy; {currentYear} {copyright}
     </p>
 
     <nav class="flex items-center gap-5">

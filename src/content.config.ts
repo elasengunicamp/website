@@ -57,7 +57,7 @@ const pesquisa = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pesquisa' }),
   schema: z.object({
     titulo: z.string(),
-    autores: z.array(z.string()),
+    autores: z.array(z.string()).min(1),
     revistaOuEvento: z.string().optional(),
     doi: z.string().optional(),
     data: z.coerce.date(),

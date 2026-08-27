@@ -1,268 +1,186 @@
 ---
-// Home (NOTES.md — "Página Principal"). Rebuild da Fase 0. Ordem de seções
-// travada via skill "design" (ver PR): hero > quem somos/história >
-// missão-visão-valores > áreas e membros (dinâmico) > carrossel do blog >
-// CTA band.
-import { getCollection } from 'astro:content';
+import { getEntry, getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
 import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
-import SectionHeading from '../components/ui/SectionHeading.astro';
-import StickerFrame from '../components/ui/StickerFrame.astro';
-import DoodleDecoration from '../components/ui/DoodleDecoration.astro';
-import ParticleHero from '../components/react/ParticleHero';
-import BlogCarousel, { type BlogCarouselPost } from '../components/react/BlogCarousel';
 
-const areas = (await getCollection('areas')).sort((a, b) => a.data.ordem - b.data.ordem);
-const membros = await getCollection('membros');
+const home = (await getEntry('paginas', 'home'))!.data;
 
-const membrosPorArea = new Map<string, typeof membros>();
-for (const membro of membros) {
-  const areaId = membro.data.area.id;
-  const lista = membrosPorArea.get(areaId) ?? [];
-  lista.push(membro);
-  membrosPorArea.set(areaId, lista);
-}
-
-const dateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
-
-const posts: BlogCarouselPost[] = (await getCollection('blog'))
+const areas = (await getCollection('areas')).sort(
+  (a, b) => a.data.ordem - b.data.ordem,
+);
+const membros = (await getCollection('membros')).sort(
+  (a, b) => a.data.ordem - b.data.ordem,
+);
+const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf())
-  .slice(0, 6)
-  .map((post) => ({
-    slug: post.id,
-    titulo: post.data.titulo,
-    resumo: post.data.resumo,
-    cover: post.data.cover,
-    dataFormatada: dateFormatter.format(post.data.data),
-  }));
+  .slice(0, 6);
 
-// Classes escritas por extenso (nunca `bg-accent-${token}`) — Tailwind v4 só
-// gera utilities que aparecem como string literal no código-fonte (ver
-// comentário em Badge.astro). O safelist em global.css cobre a forma "pelada"
-// (bg-accent-blue), não a com modificador de opacidade (/30), então esse
-// mapa precisa escrever cada classe por extenso.
-const areaBadgeClasses: Record<(typeof areas)[number]['data']['accentToken'], string> = {
-  blue: 'bg-accent-blue/30',
-  teal: 'bg-accent-teal/30',
-  pink: 'bg-accent-pink/50',
-  purple: 'bg-accent-purple/30',
-  yellow: 'bg-accent-yellow/50',
-  rose: 'bg-accent-rose/30',
-};
+const membrosPorArea = areas.map((area) => ({
+  area,
+  pessoas: membros.filter((m) => m.data.area.id === area.id),
+}));
 
-const valores = [
-  {
-    titulo: 'Missão',
-    doodle: 'star' as const,
-    texto:
-      'Promover a permanência e o protagonismo de mulheres nas engenharias, através de acolhimento, formação e visibilidade dentro e fora da Unicamp.',
-  },
-  {
-    titulo: 'Visão',
-    doodle: 'sparkle' as const,
-    texto:
-      'Ser referência entre coletivos de mulheres na engenharia do Brasil, levando o projeto a outras escolas e universidades.',
-  },
-  {
-    titulo: 'Valores',
-    doodle: 'heart' as const,
-    texto: 'Sororidade, representatividade, educação acessível e transformação social pela engenharia.',
-  },
-];
+const paras = (texto: string) =>
+  texto.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+const dateFmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' });
+
+const seoDescricao = home.seo?.descricao?.trim() || undefined;
 ---
 
-<BaseLayout title="Início">
-  <!-- 1. HERO -->
-  <section class="relative overflow-hidden px-4 pb-20 pt-16 sm:px-6 lg:pt-24">
-    <div class="absolute inset-0 -z-20 bg-gradient-section opacity-70 dark:opacity-25" aria-hidden="true"></div>
-
-    <!-- Decoração estática (CSS puro, sempre visível, sem depender de JS) -->
-    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div class="hero-float-a absolute -left-4 top-6 sm:left-4">
-        <StickerFrame tilt={-3}>
-          <img src="/images/decor/sticker-star-fabric-home.webp" alt="" width="72" height="72" class="h-16 w-16 sm:h-20 sm:w-20" />
-        </StickerFrame>
-      </div>
-      <div class="hero-float-b absolute -right-2 bottom-2 sm:right-8 sm:bottom-8">
-        <StickerFrame tilt={2}>
-          <img src="/images/decor/sticker-laco.webp" alt="" width="64" height="64" class="h-14 w-14 sm:h-16 sm:w-16" />
-        </StickerFrame>
-      </div>
-      <DoodleDecoration variant="sparkle" class="absolute right-10 top-4 h-8 w-8 text-accent-purple/70 sm:right-24" />
+<BaseLayout title="Início" description={seoDescricao}>
+  <!-- Hero -->
+  <section class="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6">
+    <h1 class="font-heading text-4xl font-bold text-ink-heading dark:text-ink-dark-heading sm:text-5xl">
+      Elas na <span class="font-script text-brand dark:text-brand-lilac">Engenharia</span>
+    </h1>
+    <p class="mt-4 font-body text-lg text-ink dark:text-ink-dark">
+      {home.hero.subtitulo}
+    </p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <Button href={home.hero.ctaPrimario.href} size="lg">
+        {home.hero.ctaPrimario.label}
+      </Button>
+      {home.hero.ctaSecundario && (
+        <Button href={home.hero.ctaSecundario.href} variant="ghost" size="lg">
+          {home.hero.ctaSecundario.label}
+        </Button>
+      )}
     </div>
+  </section>
 
-    <!-- Camada interativa (R3F, hidrata em client:visible, respeita prefers-reduced-motion) -->
-    <ParticleHero client:visible />
-
-    <div class="relative mx-auto max-w-3xl text-center">
-      <h1 class="font-heading text-4xl font-bold text-ink-heading dark:text-ink-dark-heading sm:text-5xl">
-        Elas na <span class="font-script text-brand dark:text-brand-lilac">Engenharia</span>
-      </h1>
-      <p class="mx-auto mt-4 max-w-xl font-body text-lg text-ink dark:text-ink-dark">
-        Um projeto de extensão da FEM/Unicamp que constrói, todos os dias, mais espaço pras mulheres
-        na engenharia.
-      </p>
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Button href="/acoes" size="lg">Conheça nossas ações</Button>
-        <Button href="/parcerias" variant="secondary" size="lg">Nossos parceiros</Button>
+  <!-- Quem somos + Nossa história -->
+  <section class="mx-auto grid max-w-5xl gap-12 px-4 py-12 sm:px-6 md:grid-cols-2">
+    <div>
+      <SectionHeading>{home.quemSomos.titulo}</SectionHeading>
+      <div class="mt-4 space-y-3 font-body text-ink dark:text-ink-dark">
+        {paras(home.quemSomos.corpo).map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+    <div>
+      <SectionHeading>{home.historia.titulo}</SectionHeading>
+      <div class="mt-4 space-y-3 font-body text-ink dark:text-ink-dark">
+        {paras(home.historia.corpo).map((p) => <p>{p}</p>)}
       </div>
     </div>
   </section>
 
-  <!-- 2. QUEM SOMOS / HISTÓRIA -->
-  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
-    <div class="grid gap-10 md:grid-cols-2 md:items-center">
-      <div class="space-y-4">
-        <SectionHeading eyebrow="Quem somos">Nossa história</SectionHeading>
-        <p class="font-body text-ink dark:text-ink-dark">
-          O Elas na Engenharia nasceu na Faculdade de Engenharia Mecânica (FEM) da Unicamp, a partir
-          da vontade de estudantes que sentiram, na prática, o quanto o ambiente das engenharias
-          ainda é hostil pra mulheres. O que começou como uma roda de conversa virou um projeto de
-          extensão: hoje reunimos alunas de diferentes cursos em ações de acolhimento, visitas a
-          escolas e produção de conteúdo pra mostrar que engenharia também é lugar de mulher.
-        </p>
-        <p class="font-body text-ink dark:text-ink-dark">
-          Trabalhamos em frentes que vão do apoio entre calouras e veteranas até parcerias com
-          coletivos como a SWE Brazil – Unicamp, sempre com o objetivo de aumentar a permanência e a
-          representatividade feminina nas engenharias.
-        </p>
-      </div>
-      <div class="rounded-sticker bg-white p-8 shadow-sticker dark:bg-brand-dark-surface">
-        <dl class="grid grid-cols-2 gap-6 text-center">
-          <div>
-            <dt class="font-body text-xs uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">Onde</dt>
-            <dd class="mt-1 font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
-              FEM · Unicamp
-            </dd>
-          </div>
-          <div>
-            <dt class="font-body text-xs uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">O que é</dt>
-            <dd class="mt-1 font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
-              Extensão universitária
-            </dd>
-          </div>
-          <div class="col-span-2">
-            <dt class="font-body text-xs uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">Pra quem</dt>
-            <dd class="mt-1 font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
-              Estudantes e futuras engenheiras
-            </dd>
-          </div>
-        </dl>
-      </div>
+  <!-- Missão, visão e valores -->
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div class="grid gap-6 md:grid-cols-2">
+      <Card>
+        <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          {home.mvv.missaoTitulo}
+        </h3>
+        <p class="mt-2 font-body text-ink dark:text-ink-dark">{home.mvv.missao}</p>
+      </Card>
+      <Card>
+        <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          {home.mvv.visaoTitulo}
+        </h3>
+        <p class="mt-2 font-body text-ink dark:text-ink-dark">{home.mvv.visao}</p>
+      </Card>
     </div>
-  </section>
-
-  <!-- 3. MISSÃO · VISÃO · VALORES -->
-  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
-    <div class="flex flex-col items-center">
-      <SectionHeading align="center" eyebrow="O que nos move">Missão, visão e valores</SectionHeading>
-      <StickerFrame tilt={-2} class="mt-4">
-        <img
-          src="/images/decor/sticker-hearts-trio.webp"
-          alt=""
-          aria-hidden="true"
-          width="72"
-          height="72"
-          class="h-12 w-12"
-        />
-      </StickerFrame>
-    </div>
-    <div class="mt-10 grid gap-6 sm:grid-cols-3">
-      {valores.map((item) => (
-        <Card class="flex flex-col items-start gap-3">
-          <DoodleDecoration variant={item.doodle} class="h-7 w-7 text-accent-purple" />
-          <h3 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">{item.titulo}</h3>
-          <p class="font-body text-sm text-ink dark:text-ink-dark">{item.texto}</p>
-        </Card>
-      ))}
-    </div>
-  </section>
-
-  <!-- 4. ÁREAS E MEMBROS -->
-  <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-    <SectionHeading align="center" eyebrow="Quem faz acontecer">Áreas e membros</SectionHeading>
-    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {areas.map((area) => {
-        const membrosDaArea = (membrosPorArea.get(area.id) ?? []).sort((a, b) => a.data.ordem - b.data.ordem);
-        return (
-          <Card class="flex flex-col gap-4">
-            <div class="flex items-center gap-3">
-              <span
-                class:list={[
-                  'inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full font-heading text-sm font-bold text-brand dark:text-ink-dark-heading',
-                  areaBadgeClasses[area.data.accentToken],
-                ]}
-              >
-                {area.data.nome.slice(0, 1)}
-              </span>
-              <h3 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
-                {area.data.nome}
-              </h3>
-            </div>
-            <p class="font-body text-sm text-ink dark:text-ink-dark">{area.data.descricao}</p>
-            {membrosDaArea.length > 0 && (
-              <div class="mt-auto flex items-center pt-2">
-                {membrosDaArea.slice(0, 5).map((membro, i) => (
-                  <img
-                    src={membro.data.foto}
-                    alt={membro.data.nome}
-                    title={membro.data.nome}
-                    loading="lazy"
-                    class:list={[
-                      'h-10 w-10 rounded-full border-2 border-white object-cover dark:border-brand-dark-surface',
-                      i > 0 && '-ml-3',
-                    ]}
-                  />
-                ))}
-                {membrosDaArea.length > 5 && (
-                  <span class="-ml-3 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-brand-lilac font-body text-xs font-semibold text-brand dark:border-brand-dark-surface dark:bg-brand-dark-surface dark:text-ink-dark-heading">
-                    +{membrosDaArea.length - 5}
-                  </span>
-                )}
-              </div>
-            )}
-          </Card>
-        );
-      })}
-    </div>
-  </section>
-
-  <!-- 5. CARROSSEL DO BLOG -->
-  {posts.length > 0 && (
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <SectionHeading eyebrow="No blog">Últimas do Elas</SectionHeading>
-        <a
-          href="/blog"
-          class="font-body text-sm font-semibold text-brand hover:underline dark:text-brand-lilac"
-        >
-          Ver todos os posts →
-        </a>
-      </div>
+    {home.mvv.valores.length > 0 && (
       <div class="mt-8">
-        <BlogCarousel client:visible posts={posts} />
+        <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          {home.mvv.valoresTitulo}
+        </h3>
+        <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {home.mvv.valores.map((v) => (
+            <li>
+              <p class="font-body font-semibold text-ink-heading dark:text-ink-dark-heading">
+                {v.titulo}
+              </p>
+              <p class="font-body text-sm text-ink dark:text-ink-dark">{v.descricao}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </section>
+
+  <!-- Áreas e membros -->
+  {membros.length > 0 && (
+    <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <SectionHeading eyebrow={home.areasSection.intro}>
+        {home.areasSection.titulo}
+      </SectionHeading>
+      <div class="mt-6 space-y-8">
+        {membrosPorArea
+          .filter((g) => g.pessoas.length > 0)
+          .map((g) => (
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+                {g.area.data.nome}
+              </h3>
+              <ul class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {g.pessoas.map((m) => (
+                  <li class="flex items-center gap-3">
+                    <img
+                      src={m.data.foto}
+                      alt={m.data.nome}
+                      width="48"
+                      height="48"
+                      class="h-12 w-12 rounded-full object-cover"
+                    />
+                    <span>
+                      <span class="block font-body font-semibold text-ink-heading dark:text-ink-dark-heading">
+                        {m.data.nome}
+                      </span>
+                      {m.data.cargo && (
+                        <span class="block font-body text-sm text-ink dark:text-ink-dark">
+                          {m.data.cargo}
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
       </div>
     </section>
   )}
 
-  <!-- 6. CTA BAND -->
-  <section class="bg-brand dark:bg-brand-dark-surface">
-    <div class="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 lg:flex-row lg:justify-between lg:text-left">
-      <div>
-        <h2 class="font-heading text-2xl font-bold text-brand-cream sm:text-3xl">
-          Quer fazer parte dessa história?
-        </h2>
-        <p class="mt-2 font-body text-brand-cream/80">
-          Acompanhe nossas ações e conheça quem caminha com a gente.
-        </p>
+  <!-- Blog -->
+  {posts.length > 0 && (
+    <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <SectionHeading eyebrow={home.blogSection.intro}>
+        {home.blogSection.titulo}
+      </SectionHeading>
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        {posts.map((post) => (
+          <Card href={`/blog/${post.id}`}>
+            <p class="font-body text-xs text-ink/70 dark:text-ink-dark/70">
+              {dateFmt.format(post.data.data)}
+            </p>
+            <h3 class="mt-1 font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+              {post.data.titulo}
+            </h3>
+            <p class="mt-2 font-body text-sm text-ink dark:text-ink-dark">
+              {post.data.resumo}
+            </p>
+          </Card>
+        ))}
       </div>
-      <div class="flex flex-wrap items-center justify-center gap-3">
-        <Button href="/acoes" variant="secondary" size="lg">Ver ações →</Button>
-        <Button href="/parcerias" variant="ghost" size="lg" class="!text-brand-cream !ring-brand-cream/40 hover:!bg-white/10">
-          Nossos parceiros →
-        </Button>
-      </div>
+    </section>
+  )}
+
+  <!-- Chamadas -->
+  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+    <div class="grid gap-6 md:grid-cols-2">
+      {[home.ctaAcoes, home.ctaParcerias].map((cta) => (
+        <Card>
+          <h3 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+            {cta.titulo}
+          </h3>
+          <p class="mt-2 font-body text-ink dark:text-ink-dark">{cta.texto}</p>
+          <Button href={cta.href} class="mt-4">{cta.label}</Button>
+        </Card>
+      ))}
     </div>
   </section>
 </BaseLayout>

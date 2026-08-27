@@ -71,7 +71,11 @@ collections:
       - { label: Nome, name: nome, widget: string }
       - { label: Logo, name: logo, widget: image }
       - { label: Sobre, name: sobre, widget: text }
-      - { label: Link, name: link, widget: string }
+      # pattern espelha o z.string().url() do schema (ver convenção em PROJECT-NOTES.md)
+      - label: Link
+        name: link
+        widget: string
+        pattern: ['^https?://.+', 'Informe uma URL começando com http:// ou https://']
       - { label: Categoria, name: categoria, widget: string, required: false }
       - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
 
@@ -86,7 +90,12 @@ collections:
       - { label: DOI, name: doi, widget: string, required: false }
       - { label: Data, name: data, widget: datetime }
       - { label: Resumo, name: resumo, widget: text }
-      - { label: Link, name: link, widget: string, required: false }
+      # pattern espelha o z.union([z.string().url(), z.literal('')]) do schema
+      - label: Link
+        name: link
+        widget: string
+        required: false
+        pattern: ['^(https?://.+)?$', 'Deixe vazio ou informe uma URL http:// ou https://']
 
   - name: blog
     label: Blog
@@ -110,6 +119,124 @@ collections:
       - { label: "URL do vídeo (embed)", name: embedUrl, widget: string }
       - { label: Descrição, name: descricao, widget: text }
       - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+
+  # Singletons de conteúdo (files collection). Cada arquivo é um objeto no nível
+  # raiz do YAML — formato que o Sveltia escreve e que o glob() do Astro lê.
+  - name: paginas
+    label: Páginas
+    files:
+      - name: home
+        label: Página inicial
+        file: src/content/paginas/home.yaml
+        fields:
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Título, name: titulo, widget: string }
+              - { label: Subtítulo, name: subtitulo, widget: text }
+              - label: Botão principal
+                name: ctaPrimario
+                widget: object
+                fields:
+                  - { label: Rótulo, name: label, widget: string }
+                  - { label: Link, name: href, widget: string, default: "/acoes" }
+              - label: Botão secundário
+                name: ctaSecundario
+                widget: object
+                required: false
+                fields:
+                  - { label: Rótulo, name: label, widget: string }
+                  - { label: Link, name: href, widget: string, default: "/parcerias" }
+          - label: Quem somos
+            name: quemSomos
+            widget: object
+            fields:
+              - { label: Título, name: titulo, widget: string, default: "Quem somos" }
+              - { label: Texto, name: corpo, widget: text, hint: "Separe parágrafos com uma linha em branco." }
+          - label: Nossa história
+            name: historia
+            widget: object
+            fields:
+              - { label: Título, name: titulo, widget: string, default: "Nossa história" }
+              - { label: Texto, name: corpo, widget: text, hint: "Separe parágrafos com uma linha em branco." }
+          - label: "Missão, visão e valores"
+            name: mvv
+            widget: object
+            fields:
+              - { label: Título — Missão, name: missaoTitulo, widget: string, default: "Missão" }
+              - { label: Missão, name: missao, widget: text }
+              - { label: Título — Visão, name: visaoTitulo, widget: string, default: "Visão" }
+              - { label: Visão, name: visao, widget: text }
+              - { label: Título — Valores, name: valoresTitulo, widget: string, default: "Valores" }
+              - label: Valores
+                name: valores
+                widget: list
+                label_singular: Valor
+                fields:
+                  - { label: Título, name: titulo, widget: string }
+                  - { label: Descrição, name: descricao, widget: text }
+          - label: "Seção — Áreas e membros"
+            name: areasSection
+            widget: object
+            fields:
+              - { label: Título, name: titulo, widget: string, default: "Áreas e membros" }
+              - { label: Introdução, name: intro, widget: text, required: false }
+          - label: "Seção — Blog"
+            name: blogSection
+            widget: object
+            fields:
+              - { label: Título, name: titulo, widget: string, default: "Do nosso blog" }
+              - { label: Introdução, name: intro, widget: text, required: false }
+          - label: "Chamada — Ações"
+            name: ctaAcoes
+            widget: object
+            fields:
+              - { label: Título, name: titulo, widget: string }
+              - { label: Texto, name: texto, widget: text }
+              - { label: Rótulo do botão, name: label, widget: string, default: "Ver ações" }
+              - { label: Link, name: href, widget: string, default: "/acoes" }
+          - label: "Chamada — Parcerias"
+            name: ctaParcerias
+            widget: object
+            fields:
+              - { label: Título, name: titulo, widget: string }
+              - { label: Texto, name: texto, widget: text }
+              - { label: Rótulo do botão, name: label, widget: string, default: "Ver parcerias" }
+              - { label: Link, name: href, widget: string, default: "/parcerias" }
+          - label: "SEO desta página"
+            name: seo
+            widget: object
+            required: false
+            fields:
+              - { label: Título, name: titulo, widget: string, required: false }
+              - { label: Descrição, name: descricao, widget: text, required: false }
+
+      - name: config
+        label: Configurações gerais
+        file: src/content/paginas/config.yaml
+        fields:
+          - { label: Nome da organização, name: orgNome, widget: string, default: "Elas na Engenharia" }
+          - { label: Sufixo do título das abas, name: tituloSufixo, widget: string, default: "Elas na Engenharia" }
+          - { label: "Descrição padrão (SEO)", name: metaDescricaoPadrao, widget: text }
+          # pattern espelha o z.string().email() do schema
+          - label: E-mail de contato
+            name: email
+            widget: string
+            pattern: ['^[^@\s]+@[^@\s]+\.[^@\s]+$', 'Informe um e-mail válido']
+          - { label: "Texto do rodapé (após o ano)", name: copyrightTexto, widget: string, default: "Elas na Engenharia — FEM/Unicamp. Projeto de extensão." }
+          - label: Redes sociais
+            name: redes
+            widget: list
+            label_singular: Rede social
+            fields:
+              - { label: Rótulo, name: label, widget: string }
+              - { label: Link, name: href, widget: string, hint: "URL https:// ou mailto:" }
+              - label: Tipo (ícone)
+                name: tipo
+                widget: select
+                options: [instagram, youtube, linkedin, email, outro]
+                default: outro
 
 # Coleção "metricas" fica de fora do painel visual por ora: o arquivo
 # src/content/metricas/metricas.yaml é uma lista no nível raiz (formato mais

@@ -4,6 +4,7 @@ backend:
   name: github
   repo: elasengunicamp/website
   branch: main
+  base_url: sveltia-cms-auth.mktelasengunicamp.workers.dev
 
 publish_mode: editorial_workflow
 

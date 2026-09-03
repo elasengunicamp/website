@@ -1,50 +1,29 @@
-# Conteúdo da página inicial — editável no painel visual (Sveltia CMS).
-# Objeto no nível raiz (NÃO lista) — exigência do formato "files collection" do Sveltia.
 hero:
-  titulo: Elas na Engenharia
-  subtitulo: >-
-    Projeto de extensão da FEM/Unicamp que promove equidade de gênero nas
-    engenharias — acolhendo estudantes na universidade e levando ciência e
-    tecnologia para meninas do ensino médio.
+  titulo: Elas na Engenharia -- Unicamp
+  subtitulo: Projeto de extensão da FEM/Unicamp que promove equidade de gênero nas engenharias — acolhendo estudantes na universidade e levando ciência e tecnologia para meninas do ensino médio.
   ctaPrimario:
     label: Conheça nossas ações
     href: /acoes
   ctaSecundario:
     label: Seja parceiro
     href: /parcerias
-
 quemSomos:
   titulo: Quem somos
-  corpo: >-
-    O Elas na Engenharia é um projeto de extensão da Faculdade de Engenharia
-    Mecânica da Unicamp, mantido voluntariamente por estudantes.
+  corpo: |-
+    O Elas na Engenharia é um projeto de extensão da Faculdade de Engenharia Mecânica da Unicamp, mantido voluntariamente por estudantes.
 
-
-    Atuamos em duas frentes: fortalecer a permanência de mulheres nos cursos de
-    engenharia da universidade e despertar o interesse de meninas do ensino médio
-    público por carreiras em ciência e tecnologia.
-
+    Atuamos em duas frentes: fortalecer a permanência de mulheres nos cursos de engenharia da universidade e despertar o interesse de meninas do ensino médio público por carreiras em ciência e tecnologia.
 historia:
   titulo: Nossa história
-  corpo: >-
-    O projeto nasceu da percepção de que a baixa participação feminina na
-    engenharia começa muito antes do vestibular e se aprofunda ao longo da
-    graduação.
+  corpo: |-
+    O projeto nasceu da percepção de que a baixa participação feminina na engenharia começa muito antes do vestibular e se aprofunda ao longo da graduação.
 
-
-    Desde então, organizamos visitas a escolas, rodas de conversa, oficinas e
-    conteúdo aberto de estudo, sempre em parceria com outras iniciativas de
-    equidade de gênero na área.
-
+    Desde então, organizamos visitas a escolas, rodas de conversa, oficinas e conteúdo aberto de estudo, sempre em parceria com outras iniciativas de equidade de gênero na área.
 mvv:
   missaoTitulo: Missão
-  missao: >-
-    Reduzir a desigualdade de gênero nas engenharias por meio de acolhimento,
-    divulgação científica e apoio ao ingresso e à permanência de mulheres.
+  missao: Reduzir a desigualdade de gênero nas engenharias por meio de acolhimento, divulgação científica e apoio ao ingresso e à permanência de mulheres.
   visaoTitulo: Visão
-  visao: >-
-    Uma engenharia plural, em que a presença de mulheres seja regra e não
-    exceção, em todos os níveis de formação e atuação.
+  visao: Uma engenharia plural, em que a presença de mulheres seja regra e não exceção, em todos os níveis de formação e atuação.
   valoresTitulo: Valores
   valores:
     - titulo: Acolhimento
@@ -53,27 +32,22 @@ mvv:
       descricao: Conhecimento e material de estudo gratuitos e para todas.
     - titulo: Trabalho coletivo
       descricao: Construção horizontal, voluntária e transparente.
-
 areasSection:
   titulo: Áreas e membros
   intro: Conheça as pessoas que fazem o projeto acontecer, organizadas por área de atuação.
-
 blogSection:
   titulo: Do nosso blog
   intro: Registros de ações, entrevistas e novidades do projeto.
-
 ctaAcoes:
   titulo: Veja o que já fizemos
   texto: Visitas a escolas, eventos e campanhas ao longo do ano.
   label: Ver ações
   href: /acoes
-
 ctaParcerias:
   titulo: Some com a gente
   texto: Empresas, coletivos e iniciativas que apoiam equidade na engenharia.
   label: Ver parcerias
   href: /parcerias
-
 seo:
-  titulo: ""
-  descricao: ""
+  titulo: ''
+  descricao: ''

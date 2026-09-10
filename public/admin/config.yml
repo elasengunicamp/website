@@ -235,8 +235,9 @@ collections:
               - label: Tipo (ícone)
                 name: tipo
                 widget: select
-                options: [instagram, youtube, linkedin, email, outro]
+                options: [instagram, youtube, linkedin, tiktok, email, outro]
                 default: outro
+              - { label: "Visível no site", name: visivel, widget: boolean, default: true, hint: "Desligue para manter a rede cadastrada sem exibir (conta ainda não pública)." }
 
 # Coleção "metricas" fica de fora do painel visual por ora: o arquivo
 # src/content/metricas/metricas.yaml é uma lista no nível raiz (formato mais

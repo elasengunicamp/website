@@ -10,23 +10,34 @@ import type { Tilt } from '../components/ui/StickerFrame.astro';
 // do escopo desta unidade).
 const email = 'contato@elasnaengenharia.com.br';
 
+// visivel: false = rede fiada mas não exibida (conta ainda não pública).
+// Este array não vem do CMS — religar exige editar aqui.
 const socials = [
   {
     label: 'Instagram',
     href: 'https://instagram.com/elasnaengenharia.unicamp',
     icon: 'instagram' as const,
+    visivel: true,
   },
   {
     label: 'YouTube',
     href: 'https://youtube.com/@elasnaengenharia',
     icon: 'youtube' as const,
+    visivel: false,
+  },
+  {
+    label: 'TikTok',
+    href: 'https://tiktok.com/@elasnaengenharia',
+    icon: 'tiktok' as const,
+    visivel: false,
   },
   {
     label: 'E-mail',
     href: `mailto:${email}`,
     icon: 'email' as const,
+    visivel: true,
   },
-];
+].filter((s) => s.visivel !== false);
 
 const tilts: Tilt[] = [-3, 2, -1];
 ---
@@ -106,6 +117,11 @@ const tilts: Tilt[] = [-3, 2, -1];
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
                 <rect x="2" y="5" width="20" height="14" rx="4"></rect>
                 <path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"></path>
+              </svg>
+            )}
+            {social.icon === 'tiktok' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
+                <path d="M9 12a4 4 0 1 0 4 4V4c.5 2.5 2.5 4.5 5 5"></path>
               </svg>
             )}
             {social.icon === 'email' && (

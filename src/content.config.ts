@@ -187,8 +187,10 @@ const site = defineCollection({
           // aceita https:// e mailto: -> z.string() frouxo, NÃO .url()
           href: z.string(),
           tipo: z
-            .enum(['instagram', 'youtube', 'linkedin', 'email', 'outro'])
+            .enum(['instagram', 'youtube', 'linkedin', 'tiktok', 'email', 'outro'])
             .default('outro'),
+          // false = rede fiada mas não exibida (conta ainda não pública)
+          visivel: z.boolean().default(true),
         }),
       )
       .default([]),

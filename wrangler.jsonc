@@ -1,18 +1,12 @@
 {
-  // Site 100% estático (Astro sem adapter). Este Worker só serve os arquivos
-  // gerados em ./dist como assets — sem SSR, sem @astrojs/cloudflare.
-  //
-  // Sem este arquivo, `wrangler deploy` detecta "projeto Astro sem config" e
-  // roda `astro add cloudflare` sozinho, instalando @astrojs/cloudflare@14.x,
-  // que é incompatível com astro@7.1.6 (erro: "beginContentEntryCollection is
-  // not exported by astro/app") e quebra o build de deploy.
-  //
-  // Fluxo de deploy: `pnpm run build` (gera ./dist) -> `wrangler deploy`
-  // (sobe ./dist como assets estáticos).
+  // Worker de assets estáticos (sem script) — serve o build do Astro.
+  // Deploy: `wrangler versions upload` (usado pelo Workers Builds).
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "website",
-  "compatibility_date": "2026-08-01",
+  "compatibility_date": "2026-09-10",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    // 404 do Astro (dist/404.html) para caminhos inexistentes
+    "not_found_handling": "404-page"
   }
 }

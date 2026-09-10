@@ -10,6 +10,11 @@ redes:
   - label: YouTube
     href: https://youtube.com/@elasnaengenharia
     tipo: youtube
+    visivel: false
+  - label: TikTok
+    href: https://tiktok.com/@elasnaengenharia
+    tipo: tiktok
+    visivel: false
   - label: E-mail
     href: mailto:contato@elasnaengenharia.com.br
     tipo: email

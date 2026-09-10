@@ -1,6 +1,7 @@
 {
   // Worker de assets estáticos (sem script) — serve o build do Astro.
   // Deploy: `wrangler versions upload` (usado pelo Workers Builds).
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "website",
   "compatibility_date": "2026-09-10",
   "assets": {

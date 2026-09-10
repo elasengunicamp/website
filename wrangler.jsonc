@@ -1,0 +1,11 @@
+{
+  // Worker de assets estáticos (sem script) — serve o build do Astro.
+  // Deploy: `wrangler versions upload` (usado pelo Workers Builds).
+  "name": "website",
+  "compatibility_date": "2026-09-10",
+  "assets": {
+    "directory": "./dist",
+    // 404 do Astro (dist/404.html) para caminhos inexistentes
+    "not_found_handling": "404-page"
+  }
+}

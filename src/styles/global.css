@@ -30,7 +30,7 @@
   /* Gradientes da marca */
   --background-image-gradient-cta: linear-gradient(135deg, #f8dfff, #4c0062);
   --background-image-gradient-soft: linear-gradient(135deg, #f2e8e3, #f8dfff);
-  --background-image-gradient-section: linear-gradient(180deg, #f2e8e3, #f8dfff, #4c0062);
+  --background-image-gradient-section: linear-gradient(180deg, #f2e8e3 0%, #f8dfff 62%, #eab8f0 100%);
 
   /* Tipografia — ver FONTS.md pra status placeholder vs. fontes originais da marca */
   --font-heading: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;

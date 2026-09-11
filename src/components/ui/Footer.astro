@@ -21,9 +21,20 @@ const copyright =
 
 <footer class="bg-brand text-brand-cream dark:bg-brand-dark-surface">
   <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-    <p class="font-body text-sm">
-      &copy; {currentYear} {copyright}
-    </p>
+    <div class="flex flex-col gap-3">
+      <a href="/" class="inline-flex">
+        <img
+          src="/images/brand/lockup-horizontal-light.webp"
+          alt="Elas na Engenharia"
+          width="177"
+          height="24"
+          class="h-6 w-auto"
+        />
+      </a>
+      <p class="font-body text-sm">
+        &copy; {currentYear} {copyright}
+      </p>
+    </div>
 
     <nav class="flex items-center gap-5">
       {socials.map((social) => (

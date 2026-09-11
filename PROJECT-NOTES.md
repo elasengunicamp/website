@@ -95,3 +95,13 @@ recortados (fundo transparente) — não estavam quebrados como uma checagem sup
 public/images -maxdepth 1`) sugeriu a princípio; só não tinham sido convertidos pra `.webp` ainda.
 Convertidos agora (mesmo conteúdo, `.webp`); os `.png` originais ficaram no lugar, sem uso — remover
 depois de confirmar que nada mais referencia `.png` diretamente.
+
+**Correção (2026-09-10)**: a afirmação acima estava errada pro `logo-icon` — o PNG tinha fundo
+**preto** sólido (quadrado arredondado), não transparente; só não foi percebido porque o preview
+usado na curadoria tinha fundo escuro. Regerado a partir do master em alta resolução (fornecido
+pela equipe fora do repo) com fundo realmente transparente, mais uma variante lilás
+(`logo-icon-light.webp`, `lockup-horizontal-light.webp`) pro header em dark mode — o `Nav.astro`
+antes mascarava o problema com `brightness`/`contrast` no `dark:`. `lockup-horizontal` também foi
+regerado a partir de `graphics/logo/6.png` (fonte já indicada no manifesto) pra bater com o roxo da
+marca. `favicon.ico` tinha o mesmo problema (fundo preto) — regerado multi-tamanho (16–128px) sem
+fundo.

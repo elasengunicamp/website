@@ -31,6 +31,7 @@ const {
 const fullTitle = `${title} · ${suffix}`;
 const ogImage = new URL('/images/brand/logo-icon.png', Astro.site).href;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const isContato = Astro.url.pathname.replace(/\/$/, '') === '/contato';
 ---
 
 <!doctype html>
@@ -71,5 +72,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
       <slot />
     </main>
     <Footer />
+
+    {!isContato && (
+      <a
+        href="/contato"
+        aria-label="Contato"
+        class="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 font-body text-sm font-semibold text-brand-cream shadow-lg transition-colors hover:bg-brand/90 dark:bg-brand-lilac dark:text-brand-dark dark:hover:bg-brand-lilac/90"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="3"></rect>
+          <path d="M3 6l9 7 9-7"></path>
+        </svg>
+        Contato
+      </a>
+    )}
   </body>
 </html>

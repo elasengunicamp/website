@@ -91,6 +91,21 @@ const escolasVideos = defineCollection({
   }),
 });
 
+// Biblioteca — acervo de livros recomendados, editável no CMS
+const livros = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/livros' }),
+  schema: z.object({
+    titulo: z.string(),
+    autor: z.string(),
+    // categoria livre (mesmo padrão de `tags` em acoes) — os filtros da página
+    // são gerados a partir das categorias presentes no acervo, sem lista fixa
+    categoria: z.string(),
+    motivoLeitura: z.string(),
+    capa: z.string(), // caminho em /images/uploads (CMS) ou URL completa
+    ordem: z.number().default(0),
+  }),
+});
+
 // Dados/métricas — singleton (crescimento do projeto, participação feminina)
 const metricas = defineCollection({
   loader: file('./src/content/metricas/metricas.yaml'),
@@ -180,6 +195,9 @@ const site = defineCollection({
     // único campo onde check de formato paga -> espelhado por `pattern` no config.yml
     email: z.string().email(),
     copyrightTexto: z.string(), // render: © {ano} {copyrightTexto}
+    // URL do formulário de empréstimo da biblioteca (ex.: Google Forms) — opcional,
+    // fallback pra mailto:{email} em BaseLayout/biblioteca.astro se vazio
+    linkEmprestimoBiblioteca: z.union([z.string().url(), z.literal('')]).optional(),
     redes: z
       .array(
         z.object({
@@ -204,6 +222,7 @@ export const collections = {
   parceiros,
   pesquisa,
   blog,
+  livros,
   'escolas-videos': escolasVideos,
   metricas,
   paginas, // entrada única: id "home"

@@ -6,11 +6,11 @@ import MobileMenu from './MobileMenu.astro';
 const links = [
   { href: '/', label: 'Início' },
   { href: '/blog', label: 'Blog' },
-  { href: '/dados', label: 'Dados' },
   { href: '/acoes', label: 'Ações' },
   { href: '/parcerias', label: 'Parcerias' },
   { href: '/pesquisa', label: 'Pesquisa' },
   { href: '/escolas', label: 'Escolas' },
+  { href: '/biblioteca', label: 'Biblioteca' },
 ];
 ---
 
@@ -18,19 +18,19 @@ const links = [
   <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
     <a href="/" class="flex items-center gap-2">
       <img
-        src="/images/brand/logo-icon.webp"
+        src="/images/brand/logo-icon-solid.webp"
         alt="Elas na Engenharia"
-        width="32"
-        height="32"
-        class="h-8 w-8 dark:hidden"
+        width="256"
+        height="256"
+        class="h-10 w-10 dark:hidden"
       />
       <img
-        src="/images/brand/logo-icon-light.webp"
+        src="/images/brand/logo-icon-solid-light.webp"
         alt=""
         aria-hidden="true"
-        width="32"
-        height="32"
-        class="hidden h-8 w-8 dark:block"
+        width="256"
+        height="256"
+        class="hidden h-10 w-10 dark:block"
       />
       <img
         src="/images/brand/lockup-horizontal.webp"

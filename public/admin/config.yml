@@ -111,6 +111,18 @@ collections:
       - { label: Tags, name: tags, widget: list, default: [] }
       - { label: Corpo, name: body, widget: markdown }
 
+  - name: livros
+    label: Biblioteca
+    folder: src/content/livros
+    create: true
+    fields:
+      - { label: Título, name: titulo, widget: string }
+      - { label: Autora/Autor, name: autor, widget: string }
+      - { label: Categoria, name: categoria, widget: string, hint: "Livre — vira filtro na página da biblioteca (ex.: Biografia & História)" }
+      - { label: "Por que ler?", name: motivoLeitura, widget: text, hint: "Texto persuasivo mostrado no card/modal do livro" }
+      - { label: Capa, name: capa, widget: image, hint: "Envie uma imagem ou cole a URL da capa" }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+
   - name: escolas-videos
     label: "Escolas — Vídeos"
     folder: src/content/escolas-videos
@@ -226,6 +238,12 @@ collections:
             widget: string
             pattern: ['^[^@\s]+@[^@\s]+\.[^@\s]+$', 'Informe um e-mail válido']
           - { label: "Texto do rodapé (após o ano)", name: copyrightTexto, widget: string, default: "Elas na Engenharia — FEM/Unicamp. Projeto de extensão." }
+          - label: "Link de empréstimo da biblioteca"
+            name: linkEmprestimoBiblioteca
+            widget: string
+            required: false
+            hint: "URL do formulário (ex.: Google Forms). Vazio = usa e-mail de contato."
+            pattern: ['^(https?://.+)?$', 'Deixe vazio ou informe uma URL http:// ou https://']
           - label: Redes sociais
             name: redes
             widget: list

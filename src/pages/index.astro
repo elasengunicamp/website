@@ -5,6 +5,9 @@ import SectionHeading from '../components/ui/SectionHeading.astro';
 import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
 import EllaMascot from '../components/ui/EllaMascot.astro';
+import Divider from '../components/ui/Divider.astro';
+import StatTile from '../components/dados/StatTile.astro';
+import Meter from '../components/dados/Meter.astro';
 
 const home = (await getEntry('paginas', 'home'))!.data;
 
@@ -17,6 +20,12 @@ const membros = (await getCollection('membros')).sort(
 const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf())
   .slice(0, 6);
+
+const metricas = await getCollection('metricas');
+const projeto = metricas.filter((m) => m.data.categoria === 'projeto');
+const universidade = metricas.filter((m) => m.data.categoria === 'universidade');
+const engenharia = metricas.filter((m) => m.data.categoria === 'engenharia');
+const temParticipacao = universidade.length > 0 || engenharia.length > 0;
 
 const membrosPorArea = areas.map((area) => ({
   area,
@@ -55,6 +64,8 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
     </div>
   </section>
 
+  <Divider />
+
   <!-- Quem somos + Nossa história -->
   <section class="mx-auto grid max-w-5xl gap-12 px-4 py-12 sm:px-6 md:grid-cols-2">
     <div>
@@ -70,6 +81,8 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
       </div>
     </div>
   </section>
+
+  <Divider />
 
   <!-- Missão, visão e valores -->
   <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
@@ -105,6 +118,73 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
       </div>
     )}
   </section>
+
+  <Divider />
+
+  <!-- Dados: crescimento do projeto -->
+  {projeto.length > 0 && (
+    <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <SectionHeading eyebrow="Transparência">Crescimento do projeto</SectionHeading>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {projeto.map((m) => (
+          <StatTile
+            label={m.data.label}
+            valor={m.data.valor}
+            unidade={m.data.unidade}
+            ano={m.data.ano}
+            accent="purple"
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {projeto.length > 0 && temParticipacao && <Divider />}
+
+  <!-- Dados: participação feminina -->
+  {temParticipacao && (
+    <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <div class="flex items-center gap-3">
+        <img
+          src="/images/decor/icon-capacete-dados.webp"
+          alt=""
+          aria-hidden="true"
+          class="h-8 w-8 flex-shrink-0"
+        />
+        <h2 class="font-heading text-xl font-bold text-ink-heading dark:text-ink-dark-heading">
+          Participação feminina
+        </h2>
+      </div>
+      <div class="mt-6 grid gap-8 sm:grid-cols-2">
+        {universidade.length > 0 && (
+          <div class="space-y-4">
+            <p class="font-body text-xs font-semibold uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">
+              Universidade
+            </p>
+            {universidade.map((m) => (
+              <Meter label={m.data.label} valor={m.data.valor} ano={m.data.ano} accent="blue" />
+            ))}
+          </div>
+        )}
+        {engenharia.length > 0 && (
+          <div class="space-y-4">
+            <p class="font-body text-xs font-semibold uppercase tracking-wide text-ink/60 dark:text-ink-dark/60">
+              Engenharia
+            </p>
+            {engenharia.map((m) => (
+              <Meter label={m.data.label} valor={m.data.valor} ano={m.data.ano} accent="rose" />
+            ))}
+          </div>
+        )}
+      </div>
+      <p class="mt-6 rounded-2xl border border-dashed border-brand/20 bg-white/60 p-4 font-body text-xs text-ink/70 dark:border-brand-lilac/20 dark:bg-brand-dark-surface/60 dark:text-ink-dark/70">
+        Os números acima são atualizados pela equipe via CMS. Enquanto uma métrica não tiver
+        valor registrado, ela aparece como “sem dado ainda” — não como zero.
+      </p>
+    </section>
+  )}
+
+  {(projeto.length > 0 || temParticipacao) && <Divider />}
 
   <!-- Áreas e membros -->
   {membros.length > 0 && (
@@ -149,6 +229,8 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
     </section>
   )}
 
+  {membros.length > 0 && posts.length > 0 && <Divider />}
+
   <!-- Blog -->
   {posts.length > 0 && (
     <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
@@ -172,6 +254,8 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
       </div>
     </section>
   )}
+
+  <Divider />
 
   <!-- Chamadas -->
   <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">

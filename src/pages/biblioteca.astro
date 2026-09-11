@@ -8,7 +8,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import StickerFrame from '../components/ui/StickerFrame.astro';
 import type { Tilt } from '../components/ui/StickerFrame.astro';
-import HalftonePhoto from '../components/ui/HalftonePhoto.astro';
 import Badge from '../components/ui/Badge.astro';
 import type { AccentToken } from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
@@ -140,13 +139,28 @@ const livrosData = livros.map((livro) => ({
               data-categoria={livro.data.categoria}
               data-busca={`${livro.data.titulo} ${livro.data.autor}`.toLowerCase()}
             >
-              <StickerFrame tilt={tilts[i % tilts.length]} class="w-full">
-                <HalftonePhoto
-                  src={livro.data.capa}
-                  alt={`Capa do livro ${livro.data.titulo}`}
-                  class="aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)]"
-                />
-              </StickerFrame>
+              <div class="relative w-full">
+                <StickerFrame tilt={tilts[i % tilts.length]} class="w-full">
+                  <img
+                    src={livro.data.capa}
+                    alt={`Capa do livro ${livro.data.titulo}`}
+                    class="aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover"
+                    loading="lazy"
+                  />
+                </StickerFrame>
+                <button
+                  type="button"
+                  data-abrir-livro={livro.id}
+                  aria-label={`Por que ler ${livro.data.titulo}?`}
+                  title="Por que ler?"
+                  class="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-brand text-brand-cream shadow-window transition-transform hover:scale-110 dark:bg-brand-lilac dark:text-brand-dark"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M9.5 9a2.5 2.5 0 115 .5c0 1.5-2.5 2-2.5 3.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="12" cy="17" r="0.75" fill="currentColor" stroke="none" />
+                  </svg>
+                </button>
+              </div>
               <div class="flex flex-1 flex-col gap-2 px-1">
                 <Badge accent={accentForCategoria(livro.data.categoria)} class="w-fit">
                   {livro.data.categoria}
@@ -155,13 +169,6 @@ const livrosData = livros.map((livro) => ({
                   {livro.data.titulo}
                 </h3>
                 <p class="font-body text-sm text-ink/70 dark:text-ink-dark/70">{livro.data.autor}</p>
-                <button
-                  type="button"
-                  data-abrir-livro={livro.id}
-                  class="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-brand-lilac px-4 py-2.5 font-body text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-brand-cream dark:bg-brand-dark-surface dark:text-ink-dark-heading dark:hover:bg-brand-lilac dark:hover:text-brand-dark"
-                >
-                  Por que ler?
-                </button>
               </div>
             </div>
           ))}

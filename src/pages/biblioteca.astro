@@ -1,0 +1,401 @@
+---
+// Biblioteca — acervo de livros recomendados (coleção `livros`, editável no
+// CMS). Busca/filtro/"por que ler?" rodam client-side sobre os cards já
+// renderizados no servidor (sem framework — mesmo padrão vanilla-TS do
+// ThemeToggle/MobileMenu).
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import StickerFrame from '../components/ui/StickerFrame.astro';
+import type { Tilt } from '../components/ui/StickerFrame.astro';
+import Badge from '../components/ui/Badge.astro';
+import type { AccentToken } from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+import WindowChrome from '../components/ui/WindowChrome.astro';
+
+const livros = (await getCollection('livros')).sort((a, b) => a.data.ordem - b.data.ordem);
+
+const site = (await getEntry('site', 'config'))?.data;
+const linkEmprestimo =
+  site?.linkEmprestimoBiblioteca || `mailto:${site?.email ?? 'contato@elasnaengenharia.com.br'}?subject=Empr%C3%A9stimo%20de%20livro`;
+
+// Mesmo hash estável usado pra tags em /acoes: categoria livre (vinda do CMS)
+// sempre cai no mesmo accent, sem mapear manualmente cada categoria.
+const ACCENTS: AccentToken[] = ['blue', 'teal', 'pink', 'purple', 'yellow', 'rose'];
+function accentForCategoria(categoria: string): AccentToken {
+  let hash = 0;
+  for (let i = 0; i < categoria.length; i++) hash = (hash * 31 + categoria.charCodeAt(i)) >>> 0;
+  return ACCENTS[hash % ACCENTS.length];
+}
+
+// Filtros gerados a partir do acervo — nenhuma categoria fixa no código.
+const categorias = [...new Set(livros.map((l) => l.data.categoria))];
+
+const tilts: Tilt[] = [-2, 1, -1, 2, -2, 1];
+
+const livrosData = livros.map((livro) => ({
+  id: livro.id,
+  titulo: livro.data.titulo,
+  autor: livro.data.autor,
+  categoria: livro.data.categoria,
+  motivoLeitura: livro.data.motivoLeitura,
+  capa: livro.data.capa,
+}));
+---
+
+<BaseLayout
+  title="Biblioteca"
+  description="Biblioteca do Elas na Engenharia — livros sobre mulheres pioneiras na ciência, tecnologia e engenharia, disponíveis para empréstimo."
+>
+  <section class="relative overflow-hidden bg-brand text-brand-cream">
+    <div
+      class="pointer-events-none absolute inset-0 opacity-10"
+      style="background-image: radial-gradient(#f8dfff 1px, transparent 1px); background-size: 28px 28px;"
+      aria-hidden="true"
+    >
+    </div>
+    <img
+      src="/images/decor/sticker-star-fabric-home.webp"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute right-6 top-8 hidden w-16 -rotate-12 sm:block"
+    />
+
+    <div class="relative mx-auto max-w-6xl px-4 py-16 text-center sm:px-6 md:py-24">
+      <span class="mb-6 inline-block rounded-full border border-brand-lilac/30 bg-brand-dark-surface/40 px-3 py-1 font-body text-xs font-semibold text-brand-lilac">
+        📚 Conhecimento que transforma
+      </span>
+      <h1 class="font-heading text-4xl font-bold leading-tight sm:text-5xl md:text-6xl">
+        Descubra histórias que <span class="text-brand-lilac">moldaram o mundo</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl font-body text-base text-brand-cream/90 sm:text-lg">
+        Nossa biblioteca é um espaço acolhedor e empoderador. Explore obras de pioneiras da ciência,
+        tecnologia e engenharia — inspire-se, leia e construa o futuro.
+      </p>
+      <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+        <Button href={linkEmprestimo} target="_blank" size="lg">Solicitar empréstimo</Button>
+        <Button href="#acervo" variant="secondary" size="lg">Ver acervo</Button>
+      </div>
+    </div>
+  </section>
+
+  <div id="acervo" class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <div class="flex flex-col items-center justify-between gap-6 md:flex-row md:items-end">
+      <SectionHeading eyebrow="Empréstimo na Sala do Elas">Nosso acervo</SectionHeading>
+
+      <div class="relative w-full md:w-80">
+        <svg
+          class="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/50 dark:text-ink-dark/50"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <input
+          type="text"
+          id="busca-livro"
+          placeholder="Buscar por título ou autora..."
+          class="w-full rounded-full border border-brand/15 bg-white py-2.5 pl-10 pr-4 font-body text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:ring-2 focus:ring-brand/40 dark:border-brand-lilac/15 dark:bg-brand-dark-surface dark:text-ink-dark dark:placeholder:text-ink-dark/50"
+        />
+      </div>
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-2" id="filtros-categoria">
+      <button
+        type="button"
+        data-filtro="todas"
+        aria-pressed="true"
+        class="filtro-btn rounded-full bg-brand px-4 py-2 font-body text-sm font-semibold text-brand-cream shadow-sticker transition-colors dark:bg-brand-lilac dark:text-brand-dark"
+      >
+        Todas
+      </button>
+      {categorias.map((categoria) => (
+        <button
+          type="button"
+          data-filtro={categoria}
+          aria-pressed="false"
+          class="filtro-btn rounded-full border border-brand/15 bg-white px-4 py-2 font-body text-sm font-medium text-ink transition-colors hover:bg-brand-lilac/40 dark:border-brand-lilac/15 dark:bg-brand-dark-surface dark:text-ink-dark dark:hover:bg-brand-dark-surface/70"
+        >
+          {categoria}
+        </button>
+      ))}
+    </div>
+
+    {livros.length === 0 ? (
+      <p class="mt-16 text-center font-body text-ink dark:text-ink-dark">
+        Nenhum livro publicado ainda — volte em breve.
+      </p>
+    ) : (
+      <>
+        <div id="grade-livros" class="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {livros.map((livro, i) => (
+            <div
+              class="livro-card flex flex-col gap-4"
+              data-id={livro.id}
+              data-categoria={livro.data.categoria}
+              data-busca={`${livro.data.titulo} ${livro.data.autor}`.toLowerCase()}
+            >
+              <div class="relative w-full">
+                <StickerFrame tilt={tilts[i % tilts.length]} class="w-full">
+                  <img
+                    src={livro.data.capa}
+                    alt={`Capa do livro ${livro.data.titulo}`}
+                    class="aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover"
+                    loading="lazy"
+                  />
+                </StickerFrame>
+                <button
+                  type="button"
+                  data-abrir-livro={livro.id}
+                  aria-label={`Por que ler ${livro.data.titulo}?`}
+                  title="Por que ler?"
+                  class="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-brand text-brand-cream shadow-window transition-transform hover:scale-110 dark:bg-brand-lilac dark:text-brand-dark"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M9.5 9a2.5 2.5 0 115 .5c0 1.5-2.5 2-2.5 3.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="12" cy="17" r="0.75" fill="currentColor" stroke="none" />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex flex-1 flex-col gap-2 px-1">
+                <Badge accent={accentForCategoria(livro.data.categoria)} class="w-fit">
+                  {livro.data.categoria}
+                </Badge>
+                <h3 class="font-heading text-base font-bold leading-snug text-ink-heading dark:text-ink-dark-heading">
+                  {livro.data.titulo}
+                </h3>
+                <p class="font-body text-sm text-ink/70 dark:text-ink-dark/70">{livro.data.autor}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div id="sem-resultados" class="mt-20 hidden flex-col items-center gap-3 text-center">
+          <p class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+            Nenhum livro encontrado
+          </p>
+          <p class="font-body text-sm text-ink/70 dark:text-ink-dark/70">
+            Tente ajustar a busca ou o filtro de categoria.
+          </p>
+        </div>
+      </>
+    )}
+  </div>
+
+  <a
+    href={linkEmprestimo}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Solicitar empréstimo"
+    class="fixed bottom-6 right-6 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand text-brand-cream shadow-window transition-transform hover:scale-110 dark:bg-brand-lilac dark:text-brand-dark"
+  >
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 4v16m8-8H4" stroke-linecap="round" />
+    </svg>
+  </a>
+
+  <!-- Modal "Por que ler?" -->
+  <div
+    id="livro-modal"
+    class="fixed inset-0 z-50 hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="livro-modal-titulo"
+  >
+    <div id="livro-modal-backdrop" class="fixed inset-0 bg-brand-dark/70 opacity-0 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div class="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
+      <div id="livro-modal-painel" class="relative w-full max-w-lg translate-y-4 scale-95 opacity-0 transition-all duration-300">
+        <WindowChrome title="por-que-ler.exe">
+          <button
+            type="button"
+            id="livro-modal-fechar"
+            aria-label="Fechar"
+            class="absolute right-4 top-14 z-10 rounded-full bg-brand-lilac/60 p-1.5 text-brand transition-colors hover:bg-brand-lilac dark:bg-brand-dark/60 dark:text-ink-dark dark:hover:bg-brand-dark"
+          >
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+            </svg>
+          </button>
+
+          <div class="flex flex-col gap-5 pr-6 sm:flex-row">
+            <StickerFrame tilt={-2} class="mx-auto w-32 flex-shrink-0 sm:mx-0">
+              <img id="livro-modal-capa" src="" alt="" class="aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover" />
+            </StickerFrame>
+
+            <div class="flex-1">
+              <span id="livro-modal-categoria" class="mb-2 inline-block rounded-full bg-accent-purple/20 px-3 py-1 font-body text-xs font-medium text-accent-purple"></span>
+              <h3 id="livro-modal-titulo" class="font-heading text-lg font-bold leading-snug text-ink-heading dark:text-ink-dark-heading"></h3>
+              <p id="livro-modal-autor" class="mt-1 font-body text-sm font-medium text-brand dark:text-brand-lilac"></p>
+
+              <div class="mt-4 rounded-2xl border border-brand/10 bg-brand-lilac/30 p-4 dark:border-brand-lilac/10 dark:bg-brand-dark/40">
+                <h4 class="mb-2 flex items-center gap-1.5 font-heading text-xs font-bold uppercase tracking-wide text-ink-heading dark:text-ink-dark-heading">
+                  Por que ler?
+                </h4>
+                <p id="livro-modal-motivo" class="font-body text-sm italic leading-relaxed text-ink dark:text-ink-dark"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-col-reverse gap-3 border-t border-brand/10 pt-5 dark:border-brand-lilac/10 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              id="livro-modal-continuar"
+              class="inline-flex items-center justify-center rounded-full px-5 py-2.5 font-body text-sm font-semibold text-ink ring-1 ring-inset ring-brand/20 transition-colors hover:bg-brand-lilac/40 dark:text-ink-dark dark:ring-brand-lilac/20 dark:hover:bg-brand-dark-surface/70"
+            >
+              Continuar explorando
+            </button>
+            <a
+              id="livro-modal-emprestar"
+              href={linkEmprestimo}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center rounded-full bg-brand px-5 py-2.5 font-body text-sm font-semibold text-brand-cream transition-colors hover:bg-brand/90 dark:bg-brand-lilac dark:text-brand-dark dark:hover:bg-brand-lilac/90"
+            >
+              Pegar este livro emprestado
+            </a>
+          </div>
+        </WindowChrome>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="livros-json" set:html={JSON.stringify(livrosData)} is:inline />
+
+  <script>
+    type Livro = {
+      id: string;
+      titulo: string;
+      autor: string;
+      categoria: string;
+      motivoLeitura: string;
+      capa: string;
+    };
+
+    const dataEl = document.getElementById('livros-json');
+    const livros: Livro[] = dataEl ? JSON.parse(dataEl.textContent ?? '[]') : [];
+
+    // --- Busca + filtro por categoria ---
+    const buscaInput = document.getElementById('busca-livro') as HTMLInputElement | null;
+    const filtroBtns = document.querySelectorAll<HTMLButtonElement>('.filtro-btn');
+    const cards = document.querySelectorAll<HTMLElement>('.livro-card');
+    const semResultados = document.getElementById('sem-resultados');
+    const grade = document.getElementById('grade-livros');
+
+    let filtroAtivo = 'todas';
+
+    const ATIVO_CLASSES = [
+      'bg-brand',
+      'text-brand-cream',
+      'shadow-sticker',
+      'dark:bg-brand-lilac',
+      'dark:text-brand-dark',
+    ];
+    const INATIVO_CLASSES = [
+      'border',
+      'border-brand/15',
+      'bg-white',
+      'text-ink',
+      'hover:bg-brand-lilac/40',
+      'dark:border-brand-lilac/15',
+      'dark:bg-brand-dark-surface',
+      'dark:text-ink-dark',
+      'dark:hover:bg-brand-dark-surface/70',
+    ];
+
+    function aplicarFiltros() {
+      const termo = (buscaInput?.value ?? '').trim().toLowerCase();
+      let visiveis = 0;
+
+      cards.forEach((card) => {
+        const combinaCategoria = filtroAtivo === 'todas' || card.dataset.categoria === filtroAtivo;
+        const combinaBusca = !termo || (card.dataset.busca ?? '').includes(termo);
+        const visivel = combinaCategoria && combinaBusca;
+        card.hidden = !visivel;
+        if (visivel) visiveis++;
+      });
+
+      grade?.classList.toggle('hidden', visiveis === 0);
+      semResultados?.classList.toggle('hidden', visiveis !== 0);
+      semResultados?.classList.toggle('flex', visiveis === 0);
+    }
+
+    filtroBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filtroAtivo = btn.dataset.filtro ?? 'todas';
+        filtroBtns.forEach((b) => {
+          const ativo = b === btn;
+          b.setAttribute('aria-pressed', String(ativo));
+          b.classList.remove(...ATIVO_CLASSES, ...INATIVO_CLASSES);
+          b.classList.add(...(ativo ? ATIVO_CLASSES : INATIVO_CLASSES));
+        });
+        aplicarFiltros();
+      });
+    });
+
+    buscaInput?.addEventListener('input', aplicarFiltros);
+
+    // --- Modal "Por que ler?" ---
+    const modal = document.getElementById('livro-modal');
+    const backdrop = document.getElementById('livro-modal-backdrop');
+    const painel = document.getElementById('livro-modal-painel');
+    const modalCapa = document.getElementById('livro-modal-capa') as HTMLImageElement | null;
+    const modalCategoria = document.getElementById('livro-modal-categoria');
+    const modalTitulo = document.getElementById('livro-modal-titulo');
+    const modalAutor = document.getElementById('livro-modal-autor');
+    const modalMotivo = document.getElementById('livro-modal-motivo');
+
+    function abrirModal(livro: Livro) {
+      if (!modal || !painel || !backdrop) return;
+
+      if (modalCapa) {
+        modalCapa.src = livro.capa;
+        modalCapa.alt = `Capa do livro ${livro.titulo}`;
+      }
+      if (modalCategoria) modalCategoria.textContent = livro.categoria;
+      if (modalTitulo) modalTitulo.textContent = livro.titulo;
+      if (modalAutor) modalAutor.textContent = livro.autor;
+      if (modalMotivo) modalMotivo.textContent = livro.motivoLeitura;
+
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        backdrop.classList.remove('opacity-0');
+        backdrop.classList.add('opacity-100');
+        painel.classList.remove('opacity-0', 'translate-y-4', 'scale-95');
+        painel.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+      });
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModal() {
+      if (!modal || !painel || !backdrop) return;
+
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0');
+      painel.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
+      painel.classList.add('opacity-0', 'translate-y-4', 'scale-95');
+
+      window.setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('[data-abrir-livro]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const livro = livros.find((l) => l.id === btn.dataset.abrirLivro);
+        if (livro) abrirModal(livro);
+      });
+    });
+
+    document.getElementById('livro-modal-fechar')?.addEventListener('click', fecharModal);
+    document.getElementById('livro-modal-continuar')?.addEventListener('click', fecharModal);
+    backdrop?.addEventListener('click', fecharModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal?.classList.contains('hidden')) fecharModal();
+    });
+  </script>
+</BaseLayout>

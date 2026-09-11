@@ -8,6 +8,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import StickerFrame from '../components/ui/StickerFrame.astro';
 import type { Tilt } from '../components/ui/StickerFrame.astro';
+import HalftonePhoto from '../components/ui/HalftonePhoto.astro';
 import Badge from '../components/ui/Badge.astro';
 import type { AccentToken } from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
@@ -141,11 +142,11 @@ const livrosData = livros.map((livro) => ({
             >
               <div class="relative w-full">
                 <StickerFrame tilt={tilts[i % tilts.length]} class="w-full">
-                  <img
+                  <HalftonePhoto
                     src={livro.data.capa}
                     alt={`Capa do livro ${livro.data.titulo}`}
-                    class="aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover"
-                    loading="lazy"
+                    grayscale={false}
+                    class="aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)]"
                   />
                 </StickerFrame>
                 <button

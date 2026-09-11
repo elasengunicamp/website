@@ -10,9 +10,18 @@ export interface Props {
   fit?: 'cover' | 'contain';
   // ponto de foco ao cortar (ex.: 'center', 'top', '50% 30%')
   position?: string;
+  // false = mantém a foto colorida, só a retícula (ex.: capas de livro na biblioteca)
+  grayscale?: boolean;
 }
 
-const { src, alt, class: className, fit = 'cover', position = 'center' } = Astro.props;
+const {
+  src,
+  alt,
+  class: className,
+  fit = 'cover',
+  position = 'center',
+  grayscale = true,
+} = Astro.props;
 ---
 
 <div class:list={['relative overflow-hidden', className]}>
@@ -20,7 +29,8 @@ const { src, alt, class: className, fit = 'cover', position = 'center' } = Astro
     src={src}
     alt={alt}
     class:list={[
-      'h-full w-full [filter:grayscale(1)_contrast(1.3)]',
+      'h-full w-full',
+      grayscale ? '[filter:grayscale(1)_contrast(1.3)]' : 'contrast-105',
       fit === 'contain' ? 'object-contain' : 'object-cover',
     ]}
     style={`object-position: ${position};`}

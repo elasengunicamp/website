@@ -16,8 +16,8 @@ export type GraphicVariant = {
 export const logoVariants = {
   iconLilac: 'logo/1.png', // símbolo (engrenagem + punho) roxo claro — uso em fundo escuro
   iconDarkGray: 'logo/2.png', // símbolo cinza-escuro — uso neutro
-  iconBrandPurple: 'logo/3.png', // símbolo roxo da marca — usar via public/images/brand/logo-icon.webp (já recortado)
-  lockupHorizontalSolid: 'logo/6.png', // wordmark uma linha, roxo sólido — usar via public/images/brand/lockup-horizontal.webp
+  iconBrandPurple: 'logo/3.png', // símbolo roxo da marca — usar via public/images/brand/logo-icon.webp (fundo transparente; variante dark mode: logo-icon-light.webp)
+  lockupHorizontalSolid: 'logo/6.png', // wordmark uma linha, roxo sólido — usar via public/images/brand/lockup-horizontal.webp (variante dark mode: lockup-horizontal-light.webp)
   lockupStackedGray: 'logo/7.png', // wordmark duas linhas, cinza + roxo
   lockupStackedPurple: 'logo/8.png', // wordmark duas linhas, roxo + lilás
   lockupArtisticScript: 'logo/9.png', // wordmark + script cursivo "Engenharia" — usar em contextos institucionais/festivos (font-script)

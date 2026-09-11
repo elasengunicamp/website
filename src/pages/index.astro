@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
+import EllaMascot from '../components/ui/EllaMascot.astro';
 
 const home = (await getEntry('paginas', 'home'))!.data;
 
@@ -33,6 +34,9 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
 <BaseLayout title="Início" description={seoDescricao}>
   <!-- Hero -->
   <section class="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6">
+    <div class="hero-ella mb-6 flex justify-center">
+      <EllaMascot size="lg" />
+    </div>
     <h1 class="font-heading text-4xl font-bold text-ink-heading dark:text-ink-dark-heading sm:text-5xl">
       Elas na <span class="font-script text-brand dark:text-brand-lilac">Engenharia</span>
     </h1>
@@ -186,35 +190,22 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
 </BaseLayout>
 
 <style>
-  .hero-float-a {
-    animation: float-a 7s ease-in-out infinite;
-  }
-  .hero-float-b {
-    animation: float-b 8.5s ease-in-out infinite;
+  .hero-ella {
+    animation: hero-ella-float 6s ease-in-out infinite;
   }
 
-  @keyframes float-a {
+  @keyframes hero-ella-float {
     0%,
     100% {
-      transform: translateY(0) rotate(-3deg);
+      transform: translateY(0);
     }
     50% {
-      transform: translateY(-14px) rotate(-1deg);
-    }
-  }
-  @keyframes float-b {
-    0%,
-    100% {
-      transform: translateY(0) rotate(2deg);
-    }
-    50% {
-      transform: translateY(12px) rotate(4deg);
+      transform: translateY(-12px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-float-a,
-    .hero-float-b {
+    .hero-ella {
       animation: none;
     }
   }

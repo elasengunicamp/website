@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/ui/Button.astro';
+import EllaMascot from '../components/ui/EllaMascot.astro';
 
 // Copy hardcoded de propósito: esta página tem que renderizar mesmo se a
 // camada de conteúdo (CMS/collections) falhar.
@@ -8,6 +9,9 @@ import Button from '../components/ui/Button.astro';
 
 <BaseLayout title="Página não encontrada">
   <section class="mx-auto max-w-xl px-4 py-24 text-center sm:px-6">
+    <div class="mb-6 flex justify-center">
+      <EllaMascot size="md" />
+    </div>
     <p class="font-script text-5xl text-brand dark:text-brand-lilac">404</p>
     <h1 class="mt-4 font-heading text-3xl font-bold text-ink-heading dark:text-ink-dark-heading">
       Essa página não existe

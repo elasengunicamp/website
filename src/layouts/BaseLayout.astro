@@ -27,6 +27,10 @@ const {
   description = site?.metaDescricaoPadrao ??
     'Elas na Engenharia — projeto de extensão da Unicamp/FEM que promove equidade de gênero nas engenharias.',
 } = Astro.props;
+
+const fullTitle = `${title} · ${suffix}`;
+const ogImage = new URL('/images/brand/logo-icon.png', Astro.site).href;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -37,7 +41,18 @@ const {
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <title>{title} · {suffix}</title>
+    <link rel="canonical" href={canonical} />
+    <title>{fullTitle}</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <script is:inline>
       // Aplica o tema antes do primeiro paint pra evitar flash claro/escuro.

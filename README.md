@@ -70,7 +70,7 @@ Dark mode aplicado antes do primeiro paint (evita flash), com preferência salva
 ├── src/
 │   ├── components/ui/   # Nav, Footer, Button, Card, ThemeToggle, mascote, etc.
 │   ├── layouts/          # BaseLayout.astro
-│   ├── pages/            # rotas (index, kitchen-sink)
+│   ├── pages/            # rotas
 │   └── styles/           # global.css — tokens de design (@theme)
 ├── public/                # assets estáticos (imagens de marca, favicon)
 ├── FONTS.md               # status de licenciamento das fontes da marca

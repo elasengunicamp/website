@@ -6,7 +6,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import StickerFrame from '../../components/ui/StickerFrame.astro';
 import HalftonePhoto from '../../components/ui/HalftonePhoto.astro';
 import Badge from '../../components/ui/Badge.astro';
-import { accentForTag, acaoDateFormatter } from '../../lib/acoes';
+import { accentForTag, formatAcaoData } from '../../lib/acoes';
 
 export async function getStaticPaths() {
   const acoes = await getCollection('acoes');
@@ -48,7 +48,7 @@ const galleryTilts = [-3, 2, -1, 3, -2, 1] as const;
       </h1>
       <div class="flex flex-wrap items-center gap-3">
         <span class="font-mono text-xs text-ink/70 dark:text-ink-dark/70">
-          {acaoDateFormatter.format(acao.data.data)}
+          {formatAcaoData(acao.data.data, acao.data.dataFim)}
         </span>
         {acao.data.tags.map((tag) => (
           <Badge accent={accentForTag(tag)}>{tag}</Badge>

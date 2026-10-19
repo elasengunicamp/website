@@ -1,7 +1,7 @@
 orgNome: Elas na Engenharia
 tituloSufixo: Elas na Engenharia
 metaDescricaoPadrao: Elas na Engenharia — projeto de extensão da Unicamp/FEM que promove equidade de gênero nas engenharias.
-email: contato@elasnaengenharia.com.br
+email: elaseng@unicamp.br
 copyrightTexto: Elas na Engenharia — FEM/Unicamp. Projeto de extensão.
 linkEmprestimoBiblioteca: https://forms.gle/Qp8Nk3aYtAXMNHgbA
 redes:
@@ -9,15 +9,13 @@ redes:
     href: https://instagram.com/elasnaengenharia.unicamp
     tipo: instagram
   - label: YouTube
-    href: https://youtube.com/@elasnaengenharia
+    href: https://www.youtube.com/@elasnaengenhariaunicamp
     tipo: youtube
-    visivel: false
   - label: TikTok
-    href: https://tiktok.com/@elasnaengenharia
+    href: https://www.tiktok.com/@elasnaengenharia.unicamp
     tipo: tiktok
-    visivel: false
   - label: E-mail
-    href: mailto:contato@elasnaengenharia.com.br
+    href: mailto:elaseng@unicamp.br
     tipo: email
   - label: LinkedIn
     href: https://www.linkedin.com/in/elas-na-engenharia-unicamp-0b2019310/

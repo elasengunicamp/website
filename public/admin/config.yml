@@ -54,6 +54,7 @@ collections:
     fields:
       - { label: Título, name: titulo, widget: string }
       - { label: Data, name: data, widget: datetime }
+      - { label: "Data final (ações de vários dias)", name: dataFim, widget: datetime, required: false }
       - { label: Descrição, name: descricao, widget: text }
       - { label: Capa, name: cover, widget: image }
       - label: Galeria

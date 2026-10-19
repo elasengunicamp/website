@@ -1,43 +1,23 @@
 ---
+import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StickerFrame from '../components/ui/StickerFrame.astro';
 import WindowChrome from '../components/ui/WindowChrome.astro';
 import Badge from '../components/ui/Badge.astro';
 import type { Tilt } from '../components/ui/StickerFrame.astro';
 
-// Mesma ideia dos socials do Footer.astro, mas com dados/ícones próprios
-// desta página — não importamos o Footer aqui (arquivo compartilhado, fora
-// do escopo desta unidade).
-const email = 'contato@elasnaengenharia.com.br';
+// E-mail e redes vêm do CMS (singleton "config"), mesma fonte do Footer.astro.
+// Fallback hardcoded pra build nunca quebrar se o singleton faltar.
+const site = (await getEntry('site', 'config'))?.data;
 
-// visivel: false = rede fiada mas não exibida (conta ainda não pública).
-// Este array não vem do CMS — religar exige editar aqui.
-const socials = [
-  {
-    label: 'Instagram',
-    href: 'https://instagram.com/elasnaengenharia.unicamp',
-    icon: 'instagram' as const,
-    visivel: true,
-  },
-  {
-    label: 'YouTube',
-    href: 'https://youtube.com/@elasnaengenharia',
-    icon: 'youtube' as const,
-    visivel: false,
-  },
-  {
-    label: 'TikTok',
-    href: 'https://tiktok.com/@elasnaengenharia',
-    icon: 'tiktok' as const,
-    visivel: false,
-  },
-  {
-    label: 'E-mail',
-    href: `mailto:${email}`,
-    icon: 'email' as const,
-    visivel: true,
-  },
-].filter((s) => s.visivel !== false);
+const email = site?.email ?? 'elaseng@unicamp.br';
+
+const socials = (
+  site?.redes ?? [
+    { label: 'Instagram', href: 'https://instagram.com/elasnaengenharia.unicamp', tipo: 'instagram', visivel: true },
+    { label: 'E-mail', href: `mailto:${email}`, tipo: 'email', visivel: true },
+  ]
+).filter((s) => s.visivel !== false);
 
 const tilts: Tilt[] = [-3, 2, -1];
 ---
@@ -106,28 +86,37 @@ const tilts: Tilt[] = [-3, 2, -1];
             rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
             class="flex items-center gap-3 px-6 py-4"
           >
-            {social.icon === 'instagram' && (
+            {social.tipo === 'instagram' && (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
                 <rect x="3" y="3" width="18" height="18" rx="5"></rect>
                 <circle cx="12" cy="12" r="4"></circle>
                 <circle cx="17.5" cy="6.5" r="1"></circle>
               </svg>
             )}
-            {social.icon === 'youtube' && (
+            {social.tipo === 'youtube' && (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
                 <rect x="2" y="5" width="20" height="14" rx="4"></rect>
                 <path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"></path>
               </svg>
             )}
-            {social.icon === 'tiktok' && (
+            {social.tipo === 'tiktok' && (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
                 <path d="M9 12a4 4 0 1 0 4 4V4c.5 2.5 2.5 4.5 5 5"></path>
               </svg>
             )}
-            {social.icon === 'email' && (
+            {social.tipo === 'email' && (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
                 <rect x="2" y="4" width="20" height="16" rx="3"></rect>
                 <path d="M3 6l9 7 9-7"></path>
+              </svg>
+            )}
+            {social.tipo === 'linkedin' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand dark:text-ink-dark-heading" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                <path d="M8 10v7"></path>
+                <path d="M8 7v.01"></path>
+                <path d="M12 17v-4a2 2 0 0 1 4 0v4"></path>
+                <path d="M12 10v7"></path>
               </svg>
             )}
             <span class="font-heading text-base font-bold text-ink-heading dark:text-ink-dark-heading">

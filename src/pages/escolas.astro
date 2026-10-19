@@ -13,10 +13,9 @@ const videos = (await getCollection('escolas-videos')).sort((a, b) => a.data.ord
 // Pequena variação de inclinação pros cards de vídeo, motivo scrapbook.
 const tilts: Tilt[] = [-2, 1, -1, 2];
 
-// TODO(pendência do time): definir a ferramenta/URL real dos flashcards
-// (deck próprio, plataforma existente, página dedicada?) antes de trocar
-// esse link placeholder.
-const flashcardsUrl: string | null = null;
+// Pasta pública no Google Drive com os flashcards.
+const flashcardsUrl: string | null =
+  'https://drive.google.com/drive/folders/1NcbD_2G3xXkFJh52o42tDP9Df9ZKlXI2';
 ---
 
 <BaseLayout
@@ -124,12 +123,7 @@ const flashcardsUrl: string | null = null;
                 Acessar flashcards
               </span>
             )}
-            <Badge accent="rose">link a definir</Badge>
           </div>
-          <p class="font-mono text-xs italic text-ink/70 dark:text-ink-dark/70">
-            Pendência: definir a ferramenta (deck próprio, plataforma existente, página dedicada) com
-            a coordenação do projeto.
-          </p>
         </div>
       </WindowChrome>
     </div>

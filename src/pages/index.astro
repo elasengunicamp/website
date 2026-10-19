@@ -27,6 +27,9 @@ const universidade = metricas.filter((m) => m.data.categoria === 'universidade')
 const engenharia = metricas.filter((m) => m.data.categoria === 'engenharia');
 const temParticipacao = universidade.length > 0 || engenharia.length > 0;
 
+// Seção de membros oculta até ter conteúdo real; trocar pra true pra reexibir.
+const mostrarMembros = false;
+
 const membrosPorArea = areas.map((area) => ({
   area,
   pessoas: membros.filter((m) => m.data.area.id === area.id),
@@ -177,17 +180,13 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
           </div>
         )}
       </div>
-      <p class="mt-6 rounded-2xl border border-dashed border-brand/20 bg-white/60 p-4 font-body text-xs text-ink/70 dark:border-brand-lilac/20 dark:bg-brand-dark-surface/60 dark:text-ink-dark/70">
-        Os números acima são atualizados pela equipe via CMS. Enquanto uma métrica não tiver
-        valor registrado, ela aparece como “sem dado ainda” — não como zero.
-      </p>
     </section>
   )}
 
   {(projeto.length > 0 || temParticipacao) && <Divider />}
 
   <!-- Áreas e membros -->
-  {membros.length > 0 && (
+  {mostrarMembros && membros.length > 0 && (
     <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       <SectionHeading eyebrow={home.areasSection.intro}>
         {home.areasSection.titulo}
@@ -229,7 +228,7 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
     </section>
   )}
 
-  {membros.length > 0 && posts.length > 0 && <Divider />}
+  {mostrarMembros && membros.length > 0 && posts.length > 0 && <Divider />}
 
   <!-- Blog -->
   {posts.length > 0 && (

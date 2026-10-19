@@ -11,6 +11,19 @@ publish_mode: editorial_workflow
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
+# Converte pra WebP e reduz no upload (fotos de celular chegam com 4–12 MB).
+# width/height = limite máximo: fit padrão é "scale-down" (mantém proporção,
+# não amplia imagem menor). Confirmado no código do Sveltia v0.248.0.
+media_libraries:
+  default:
+    config:
+      transformations:
+        raster_image:
+          format: webp
+          quality: 80
+          width: 1600
+          height: 1600
+
 locale: pt
 
 collections:
@@ -27,7 +40,7 @@ collections:
         widget: select
         options: [blue, teal, pink, purple, yellow, rose]
         default: purple
-      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int, hint: "Número menor aparece primeiro." }
 
   - name: membros
     label: Membros
@@ -44,8 +57,8 @@ collections:
         display_fields: [nome]
       - { label: Curso, name: curso, widget: string, required: false }
       - { label: Cargo, name: cargo, widget: string, required: false }
-      - { label: Foto, name: foto, widget: image }
-      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+      - { label: Foto, name: foto, widget: image, hint: "Quadrada, rosto centralizado (aparece recortada em círculo)." }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int, hint: "Número menor aparece primeiro." }
 
   - name: acoes
     label: Ações
@@ -56,13 +69,13 @@ collections:
       - { label: Data, name: data, widget: datetime }
       - { label: "Data final (ações de vários dias)", name: dataFim, widget: datetime, required: false }
       - { label: Descrição, name: descricao, widget: text }
-      - { label: Capa, name: cover, widget: image }
+      - { label: Capa, name: cover, widget: image, hint: "Imagem horizontal, de preferência." }
       - label: Galeria
         name: galeria
         widget: list
         field: { label: Imagem, name: image, widget: image }
         default: []
-      - { label: Tags, name: tags, widget: list, default: [] }
+      - { label: Tags, name: tags, widget: list, default: [], hint: "Livres, em minúsculas. Reuse as existentes: acolhimento, aniversário, congresso, dia das mulheres, divulgação, technovation, visita técnica." }
       - { label: Corpo, name: body, widget: markdown, required: false }
 
   - name: parceiros
@@ -79,7 +92,7 @@ collections:
         widget: string
         pattern: ['^https?://.+', 'Informe uma URL começando com http:// ou https://']
       - { label: Categoria, name: categoria, widget: string, required: false }
-      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int, hint: "Número menor aparece primeiro." }
 
   - name: pesquisa
     label: "Pesquisa / Elas indica"
@@ -106,10 +119,10 @@ collections:
     fields:
       - { label: Título, name: titulo, widget: string }
       - { label: Data, name: data, widget: datetime }
-      - { label: Autor, name: autor, widget: string }
-      - { label: Capa, name: cover, widget: image }
+      - { label: Autor, name: autor, widget: string, hint: "Seu nome. Todos os commits saem pela mesma conta — este campo é o registro de quem escreveu." }
+      - { label: Capa, name: cover, widget: image, hint: "Imagem horizontal, de preferência." }
       - { label: Resumo, name: resumo, widget: text }
-      - { label: Tags, name: tags, widget: list, default: [] }
+      - { label: Tags, name: tags, widget: list, default: [], hint: "Livres, em minúsculas. Reuse as existentes antes de criar nova (ex.: novidades)." }
       - { label: Corpo, name: body, widget: markdown }
 
   - name: livros
@@ -122,7 +135,7 @@ collections:
       - { label: Categoria, name: categoria, widget: string, hint: "Livre — vira filtro na página da biblioteca (ex.: Biografia & História)" }
       - { label: "Por que ler?", name: motivoLeitura, widget: text, hint: "Texto persuasivo mostrado no card/modal do livro" }
       - { label: Capa, name: capa, widget: image, hint: "Envie uma imagem ou cole a URL da capa" }
-      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int, hint: "Número menor aparece primeiro." }
 
   - name: escolas-videos
     label: "Escolas — Vídeos"
@@ -130,9 +143,14 @@ collections:
     create: true
     fields:
       - { label: Título, name: titulo, widget: string }
-      - { label: "URL do vídeo (embed)", name: embedUrl, widget: string }
+      # pattern espelha o z.string().url() do schema (ver convenção em PROJECT-NOTES.md)
+      - label: "URL do vídeo (embed)"
+        name: embedUrl
+        widget: string
+        hint: "No YouTube: Compartilhar → Incorporar → copie só o endereço dentro de src=\"…\" (formato https://www.youtube.com/embed/CÓDIGO)."
+        pattern: ['^https?://.+', 'Informe uma URL começando com http:// ou https://']
       - { label: Descrição, name: descricao, widget: text }
-      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int }
+      - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int, hint: "Número menor aparece primeiro." }
 
   # Singletons de conteúdo (files collection). Cada arquivo é um objeto no nível
   # raiz do YAML — formato que o Sveltia escreve e que o glob() do Astro lê.

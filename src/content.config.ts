@@ -32,6 +32,8 @@ const acoes = defineCollection({
   schema: z.object({
     titulo: z.string(),
     data: z.coerce.date(),
+    // opcional: ações de vários dias (ex.: CAF 10–31/01)
+    dataFim: z.coerce.date().optional(),
     descricao: z.string(),
     cover: z.string(),
     galeria: z.array(z.string()).default([]),

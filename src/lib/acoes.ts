@@ -14,7 +14,14 @@ export function accentForTag(tag: string): AccentToken {
 }
 
 export const acaoDateFormatter = new Intl.DateTimeFormat('pt-BR', {
-  day: '2-digit',
+  day: 'numeric',
   month: 'short',
   year: 'numeric',
+  timeZone: 'UTC',
 });
+
+// Data única ou intervalo ("10 – 31 de jan. de 2024"); formatRange do Intl
+// já colapsa mês/ano repetidos.
+export function formatAcaoData(inicio: Date, fim?: Date): string {
+  return fim ? acaoDateFormatter.formatRange(inicio, fim) : acaoDateFormatter.format(inicio);
+}

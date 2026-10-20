@@ -74,7 +74,9 @@ collections:
         name: galeria
         widget: list
         field: { label: Imagem, name: image, widget: image }
+        required: false
         default: []
+        hint: "Opcional. Sem fotos, a página da ação mostra só capa e texto."
       - { label: Tags, name: tags, widget: list, default: [], hint: "Livres, em minúsculas. Reuse as existentes: acolhimento, aniversário, congresso, dia das mulheres, divulgação, technovation, visita técnica." }
       - { label: Corpo, name: body, widget: markdown, required: false }
 
@@ -277,8 +279,30 @@ collections:
                 default: outro
               - { label: "Visível no site", name: visivel, widget: boolean, default: true, hint: "Desligue para manter a rede cadastrada sem exibir (conta ainda não pública)." }
 
-# Coleção "metricas" fica de fora do painel visual por ora: o arquivo
-# src/content/metricas/metricas.yaml é uma lista no nível raiz (formato mais
-# simples pro loader file() do Astro), e o formato de "files collection" do
-# Sveltia pra arquivo-raiz-lista precisa ser confirmado/testado antes de
-# expor no CMS. Editar via PR direto até essa decisão (ver PROJECT-NOTES.md).
+  # Métricas: objeto { metricas: [...] } no nível raiz (files collection).
+  # Valor vazio = "sem dado ainda" no site; 0 é valor real.
+  - name: metricas
+    label: Métricas
+    files:
+      - name: metricas
+        label: Números do projeto
+        file: src/content/metricas/metricas.yaml
+        fields:
+          - label: Métricas
+            name: metricas
+            widget: list
+            summary: "{{label}}: {{valor}}"
+            fields:
+              - { label: ID, name: id, widget: string, hint: "Identificador único, sem espaços (ex.: escolas-visitadas)." }
+              - { label: Rótulo, name: label, widget: string }
+              - { label: Valor, name: valor, widget: number, value_type: int, required: false, hint: "Deixe vazio se ainda não foi medido." }
+              - { label: Unidade, name: unidade, widget: string, required: false, hint: "Ex.: pessoas, escolas, %" }
+              - label: Categoria
+                name: categoria
+                widget: select
+                options:
+                  - { label: "Crescimento do projeto", value: projeto }
+                  - { label: "Participação feminina — universidade", value: universidade }
+                  - { label: "Participação feminina — engenharia", value: engenharia }
+                default: projeto
+              - { label: Ano, name: ano, widget: number, value_type: int, required: false }

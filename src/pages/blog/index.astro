@@ -1,13 +1,12 @@
 ---
 // Blog de marketing — posts/entrevistas diversas (NOTES.md). Conteúdo
-// distinto de /pesquisa (ver content.config.ts). Capa em tratamento halftone
-// via HalftonePhoto.astro; o post mais recente ganha um acento de fita washi
+// distinto de /pesquisa (ver content.config.ts). Capa sem retícula (halftone
+// só na biblioteca); o post mais recente ganha um acento de fita washi
 // (public/graphics/textures/52.png — revisado, ver graphics-manifest.ts).
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import Badge from '../../components/ui/Badge.astro';
-import HalftonePhoto from '../../components/ui/HalftonePhoto.astro';
 import { formatarData } from '../../lib/date';
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf());
@@ -37,7 +36,7 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.data.valueOf()
             ]}
           >
             <div class="relative h-40 overflow-hidden">
-              <HalftonePhoto src={cover} alt={titulo} class="h-full w-full" />
+              <img src={cover} alt={titulo} class="h-full w-full object-cover" loading="lazy" />
               {i === 0 && (
                 <img
                   src="/graphics/textures/52.png"

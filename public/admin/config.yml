@@ -74,7 +74,9 @@ collections:
         name: galeria
         widget: list
         field: { label: Imagem, name: image, widget: image }
+        required: false
         default: []
+        hint: "Opcional. Sem fotos, a página da ação mostra só capa e texto."
       - { label: Tags, name: tags, widget: list, default: [], hint: "Livres, em minúsculas. Reuse as existentes: acolhimento, aniversário, congresso, dia das mulheres, divulgação, technovation, visita técnica." }
       - { label: Corpo, name: body, widget: markdown, required: false }
 

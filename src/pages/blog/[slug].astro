@@ -1,10 +1,9 @@
 ---
-// Detalhe de post do blog — capa halftone + fita washi, metadados (autor,
+// Detalhe de post do blog — capa + fita washi, metadados (autor,
 // data, tags) e corpo em MDX (ver content.config.ts e astro.config.mjs).
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Badge from '../../components/ui/Badge.astro';
-import HalftonePhoto from '../../components/ui/HalftonePhoto.astro';
 import { formatarData } from '../../lib/date';
 
 export async function getStaticPaths() {
@@ -46,7 +45,7 @@ const { Content } = await render(post);
     </div>
 
     <div class="relative mt-8 overflow-hidden rounded-sticker shadow-sticker">
-      <HalftonePhoto src={cover} alt={titulo} class="h-72 w-full sm:h-96" />
+      <img src={cover} alt={titulo} class="h-72 w-full object-cover sm:h-96" />
       <img
         src="/graphics/textures/52.png"
         alt=""

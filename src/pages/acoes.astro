@@ -1,12 +1,11 @@
 ---
 // Listagem de Ações (NOTES.md — "Visitas à escolas, aniversário do Elas,
 // dia da mulher..."). Rascunho visual aprovado no /design antes de codar
-// (ver PR): frame sticker + halftone na capa, mural de tachinha no topo.
+// (ver PR): frame sticker na capa (sem retícula halftone), mural de tachinha no topo.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import StickerFrame from '../components/ui/StickerFrame.astro';
-import HalftonePhoto from '../components/ui/HalftonePhoto.astro';
 import Badge from '../components/ui/Badge.astro';
 import { accentForTag, formatAcaoData } from '../lib/acoes';
 
@@ -35,10 +34,11 @@ const tilts = [-2, 1, -1, 2, -2, 1] as const;
         {acoes.map((acao, i) => (
           <a href={`/acoes/${acao.id}`} class="group flex flex-col gap-4">
             <StickerFrame tilt={tilts[i % tilts.length]} class="w-full sm:w-72">
-              <HalftonePhoto
+              <img
                 src={acao.data.cover}
                 alt={acao.data.titulo}
-                class="aspect-[4/3] w-full rounded-[calc(var(--radius-sticker)-6px)]"
+                class="aspect-[4/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover"
+                loading="lazy"
               />
             </StickerFrame>
             <div class="flex flex-col gap-2 px-1">

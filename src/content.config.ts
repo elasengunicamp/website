@@ -109,26 +109,31 @@ const livros = defineCollection({
 });
 
 // Dados/métricas — singleton (crescimento do projeto, participação feminina)
+// Objeto { metricas: [...] } no nível raiz (não lista-raiz) pra ser editável
+// como files collection no Sveltia — mesmo esquema glob() de "paginas".
 const metricas = defineCollection({
-  loader: file('./src/content/metricas/metricas.yaml'),
+  loader: glob({ pattern: 'metricas.yaml', base: './src/content/metricas' }),
   schema: z.object({
-    id: z.string(),
-    label: z.string(),
-    // Opcional de propósito: omitir valor (em vez de gravar 0) é como o CMS
-    // marca "ainda não medido" — ver StatTile/Meter, que tratam 0 como um
-    // valor real e undefined como "sem dado ainda" (achado de code review:
-    // tratar 0 como sentinela esconderia uma métrica que zerou de verdade).
-    valor: z.number().optional(),
-    unidade: z.string().optional(),
-    categoria: z.enum(['projeto', 'universidade', 'engenharia']),
-    ano: z.number().optional(),
+    metricas: z.array(
+      z.object({
+        id: z.string(),
+        label: z.string(),
+        // Opcional de propósito: omitir valor (em vez de gravar 0) é como o CMS
+        // marca "ainda não medido" — ver StatTile/Meter, que tratam 0 como um
+        // valor real e undefined como "sem dado ainda" (achado de code review:
+        // tratar 0 como sentinela esconderia uma métrica que zerou de verdade).
+        valor: z.number().optional(),
+        unidade: z.string().optional(),
+        categoria: z.enum(['projeto', 'universidade', 'engenharia']),
+        ano: z.number().optional(),
+      }),
+    ),
   }),
 });
 
 // Conteúdo institucional editável no CMS (singletons).
 // glob() sobre um arquivo específico -> 1 entrada por arquivo, objeto no nível
-// raiz (evita o problema de lista-raiz do metricas.yaml, que impede file collection
-// no Sveltia). file() NÃO serve aqui: em objeto flat trataria cada chave top-level
+// raiz (formato que o Sveltia escreve como files collection). file() NÃO serve aqui: em objeto flat trataria cada chave top-level
 // como entrada separada.
 const paginas = defineCollection({
   loader: glob({ pattern: 'home.yaml', base: './src/content/paginas' }),

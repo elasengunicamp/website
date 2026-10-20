@@ -21,10 +21,10 @@ const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf())
   .slice(0, 6);
 
-const metricas = await getCollection('metricas');
-const projeto = metricas.filter((m) => m.data.categoria === 'projeto');
-const universidade = metricas.filter((m) => m.data.categoria === 'universidade');
-const engenharia = metricas.filter((m) => m.data.categoria === 'engenharia');
+const metricas = (await getEntry('metricas', 'metricas'))?.data.metricas ?? [];
+const projeto = metricas.filter((m) => m.categoria === 'projeto');
+const universidade = metricas.filter((m) => m.categoria === 'universidade');
+const engenharia = metricas.filter((m) => m.categoria === 'engenharia');
 const temParticipacao = universidade.length > 0 || engenharia.length > 0;
 
 // Seção de membros oculta até ter conteúdo real; trocar pra true pra reexibir.
@@ -131,10 +131,10 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
       <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {projeto.map((m) => (
           <StatTile
-            label={m.data.label}
-            valor={m.data.valor}
-            unidade={m.data.unidade}
-            ano={m.data.ano}
+            label={m.label}
+            valor={m.valor}
+            unidade={m.unidade}
+            ano={m.ano}
             accent="purple"
           />
         ))}
@@ -165,7 +165,7 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
               Universidade
             </p>
             {universidade.map((m) => (
-              <Meter label={m.data.label} valor={m.data.valor} ano={m.data.ano} accent="blue" />
+              <Meter label={m.label} valor={m.valor} ano={m.ano} accent="blue" />
             ))}
           </div>
         )}
@@ -175,7 +175,7 @@ const seoDescricao = home.seo?.descricao?.trim() || undefined;
               Engenharia
             </p>
             {engenharia.map((m) => (
-              <Meter label={m.data.label} valor={m.data.valor} ano={m.data.ano} accent="rose" />
+              <Meter label={m.label} valor={m.valor} ano={m.ano} accent="rose" />
             ))}
           </div>
         )}

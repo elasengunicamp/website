@@ -14,6 +14,13 @@ const acoes = (await getCollection('acoes')).sort(
 );
 
 const tilts = [-2, 1, -1, 2, -2, 1] as const;
+
+// Busca sem distinção de maiúsculas/acentos — mesma função usada no script.
+const normalizar = (texto: string) =>
+  texto.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+
+// Anos (UTC) presentes nos dados, do mais recente ao mais antigo.
+const anos = [...new Set(acoes.map((acao) => acao.data.data.getUTCFullYear()))].sort((a, b) => b - a);
 ---
 
 <BaseLayout title="Ações" description="Visitas a escolas, aniversário do Elas, Dia da Mulher e outras ações do Elas na Engenharia.">
@@ -30,35 +37,164 @@ const tilts = [-2, 1, -1, 2, -2, 1] as const;
         Nenhuma ação publicada ainda — volte em breve.
       </p>
     ) : (
-      <div class="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-        {acoes.map((acao, i) => (
-          <a href={`/acoes/${acao.id}`} class="group flex flex-col gap-4">
-            <StickerFrame tilt={tilts[i % tilts.length]} class="w-full sm:w-72">
-              <img
-                src={acao.data.cover}
-                alt={acao.data.titulo}
-                class="aspect-[4/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover"
-                loading="lazy"
-              />
-            </StickerFrame>
-            <div class="flex flex-col gap-2 px-1">
-              <h3 class="font-heading text-lg font-bold text-ink-heading transition-colors group-hover:text-brand/80 dark:text-ink-dark-heading">
-                {acao.data.titulo}
-              </h3>
-              <p class="font-mono text-xs text-ink/70 dark:text-ink-dark/70">
-                {formatAcaoData(acao.data.data, acao.data.dataFim)}
-              </p>
-              {acao.data.tags.length > 0 && (
-                <div class="flex flex-wrap gap-2">
-                  {acao.data.tags.map((tag) => (
-                    <Badge accent={accentForTag(tag)}>{tag}</Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-          </a>
-        ))}
-      </div>
+      <>
+        <div class="mt-12 flex flex-col items-center gap-5">
+          <div class="relative w-full max-w-md">
+            <svg
+              class="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/50 dark:text-ink-dark/50"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <input
+              type="search"
+              id="busca-acao"
+              aria-label="Buscar ações por título ou tag"
+              placeholder="Buscar por título ou tag..."
+              class="w-full rounded-full border border-brand/15 bg-white py-2.5 pl-10 pr-4 font-body text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:ring-2 focus:ring-brand/40 dark:border-brand-lilac/15 dark:bg-brand-dark-surface dark:text-ink-dark dark:placeholder:text-ink-dark/50"
+            />
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Filtrar ações por ano">
+            <button
+              type="button"
+              data-ano="todos"
+              aria-pressed="true"
+              class="filtro-ano rounded-full bg-brand px-4 py-2 font-body text-sm font-semibold text-brand-cream shadow-sticker transition-colors dark:bg-brand-lilac dark:text-brand-dark"
+            >
+              Todos
+            </button>
+            {anos.map((ano) => (
+              <button
+                type="button"
+                data-ano={String(ano)}
+                aria-pressed="false"
+                class="filtro-ano rounded-full border border-brand/15 bg-white px-4 py-2 font-body text-sm font-medium text-ink transition-colors hover:bg-brand-lilac/40 dark:border-brand-lilac/15 dark:bg-brand-dark-surface dark:text-ink-dark dark:hover:bg-brand-dark-surface/70"
+              >
+                {ano}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div id="grade-acoes" class="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {acoes.map((acao, i) => (
+            <a
+              href={`/acoes/${acao.id}`}
+              class="acao-card group flex flex-col gap-4"
+              data-ano={String(acao.data.data.getUTCFullYear())}
+              data-busca={normalizar(`${acao.data.titulo} ${acao.data.tags.join(' ')}`)}
+            >
+              <StickerFrame tilt={tilts[i % tilts.length]} class="w-full sm:w-72">
+                <img
+                  src={acao.data.cover}
+                  alt={acao.data.titulo}
+                  class="aspect-[4/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover"
+                  loading="lazy"
+                />
+              </StickerFrame>
+              <div class="flex flex-col gap-2 px-1">
+                <h3 class="font-heading text-lg font-bold text-ink-heading transition-colors group-hover:text-brand/80 dark:text-ink-dark-heading">
+                  {acao.data.titulo}
+                </h3>
+                <p class="font-mono text-xs text-ink/70 dark:text-ink-dark/70">
+                  {formatAcaoData(acao.data.data, acao.data.dataFim)}
+                </p>
+                {acao.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2">
+                    {acao.data.tags.map((tag) => (
+                      <Badge accent={accentForTag(tag)}>{tag}</Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div id="sem-resultados" class="mt-20 hidden flex-col items-center gap-3 text-center">
+          <p class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+            Nenhuma ação encontrada
+          </p>
+          <p class="font-body text-sm text-ink/70 dark:text-ink-dark/70">
+            Tente ajustar a busca ou o filtro de ano.
+          </p>
+        </div>
+      </>
     )}
   </div>
 </BaseLayout>
+
+<script>
+  // --- Busca + filtro por ano ---
+  const buscaInput = document.getElementById('busca-acao') as HTMLInputElement | null;
+  const filtroBtns = document.querySelectorAll<HTMLButtonElement>('.filtro-ano');
+  const cards = document.querySelectorAll<HTMLElement>('.acao-card');
+  const semResultados = document.getElementById('sem-resultados');
+  const grade = document.getElementById('grade-acoes');
+
+  let anoAtivo = 'todos';
+
+  const ATIVO_CLASSES = [
+    'bg-brand',
+    'text-brand-cream',
+    'font-semibold',
+    'shadow-sticker',
+    'dark:bg-brand-lilac',
+    'dark:text-brand-dark',
+  ];
+  const INATIVO_CLASSES = [
+    'border',
+    'border-brand/15',
+    'bg-white',
+    'text-ink',
+    'font-medium',
+    'hover:bg-brand-lilac/40',
+    'dark:border-brand-lilac/15',
+    'dark:bg-brand-dark-surface',
+    'dark:text-ink-dark',
+    'dark:hover:bg-brand-dark-surface/70',
+  ];
+
+  // Mesma normalização do data-busca gerado no build.
+  const normalizar = (texto: string) =>
+    texto.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+
+  function aplicarFiltros() {
+    const termo = normalizar((buscaInput?.value ?? '').trim());
+    let visiveis = 0;
+
+    cards.forEach((card) => {
+      const combinaAno = anoAtivo === 'todos' || card.dataset.ano === anoAtivo;
+      const combinaBusca = !termo || (card.dataset.busca ?? '').includes(termo);
+      const visivel = combinaAno && combinaBusca;
+      card.hidden = !visivel;
+      if (visivel) visiveis++;
+    });
+
+    grade?.classList.toggle('hidden', visiveis === 0);
+    semResultados?.classList.toggle('hidden', visiveis !== 0);
+    semResultados?.classList.toggle('flex', visiveis === 0);
+  }
+
+  filtroBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      anoAtivo = btn.dataset.ano ?? 'todos';
+      filtroBtns.forEach((b) => {
+        const ativo = b === btn;
+        b.setAttribute('aria-pressed', String(ativo));
+        b.classList.remove(...ATIVO_CLASSES, ...INATIVO_CLASSES);
+        b.classList.add(...(ativo ? ATIVO_CLASSES : INATIVO_CLASSES));
+      });
+      aplicarFiltros();
+    });
+  });
+
+  buscaInput?.addEventListener('input', aplicarFiltros);
+</script>

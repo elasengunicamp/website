@@ -191,7 +191,8 @@ const livrosData = livros.map((livro) => ({
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Solicitar empréstimo"
-    class="fixed bottom-6 right-6 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand text-brand-cream shadow-window transition-transform hover:scale-110 dark:bg-brand-lilac dark:text-brand-dark"
+    title="Solicitar empréstimo"
+    class="fixed bottom-24 right-6 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand text-brand-cream shadow-window transition-transform hover:scale-110 dark:bg-brand-lilac dark:text-brand-dark"
   >
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M12 4v16m8-8H4" stroke-linecap="round" />
@@ -222,8 +223,8 @@ const livrosData = livros.map((livro) => ({
           </button>
 
           <div class="flex flex-col gap-5 pr-6 sm:flex-row">
-            <StickerFrame tilt={-2} class="mx-auto w-32 flex-shrink-0 sm:mx-0">
-              <img id="livro-modal-capa" src="" alt="" class="aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover" />
+            <StickerFrame tilt={-2} class="mx-auto w-32 flex-shrink-0 self-start sm:mx-0">
+              <img id="livro-modal-capa" src="" alt="" class="block aspect-[2/3] w-full rounded-[calc(var(--radius-sticker)-6px)] object-cover" />
             </StickerFrame>
 
             <div class="flex-1">
@@ -348,8 +349,13 @@ const livrosData = livros.map((livro) => ({
     const modalAutor = document.getElementById('livro-modal-autor');
     const modalMotivo = document.getElementById('livro-modal-motivo');
 
+    // Timer do fechamento animado — cancelado ao reabrir, senão o `hidden`
+    // atrasado esconde o modal recém-aberto (fechar + abrir em < 300ms).
+    let fecharTimer: number | undefined;
+
     function abrirModal(livro: Livro) {
       if (!modal || !painel || !backdrop) return;
+      window.clearTimeout(fecharTimer);
 
       if (modalCapa) {
         modalCapa.src = livro.capa;
@@ -378,7 +384,7 @@ const livrosData = livros.map((livro) => ({
       painel.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
       painel.classList.add('opacity-0', 'translate-y-4', 'scale-95');
 
-      window.setTimeout(() => {
+      fecharTimer = window.setTimeout(() => {
         modal.classList.add('hidden');
         document.body.style.overflow = '';
       }, 300);

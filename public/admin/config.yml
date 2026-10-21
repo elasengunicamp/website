@@ -97,7 +97,7 @@ collections:
       - { label: Ordem, name: ordem, widget: number, default: 0, value_type: int, hint: "Número menor aparece primeiro." }
 
   - name: pesquisa
-    label: "Pesquisa / Elas indica"
+    label: "Pesquisa / Review d'Elas"
     folder: src/content/pesquisa
     create: true
     fields:

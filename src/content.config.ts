@@ -60,7 +60,7 @@ const parceiros = defineCollection({
   }),
 });
 
-// Pesquisa/Elas indica — formato blog, conteúdo separado, com metadados de publicação
+// Pesquisa/Review d'Elas — formato blog, conteúdo separado, com metadados de publicação
 const pesquisa = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pesquisa' }),
   schema: z.object({

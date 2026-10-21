@@ -32,13 +32,19 @@ const acoes = defineCollection({
   schema: z.object({
     titulo: z.string(),
     data: z.coerce.date(),
-    // opcional: ações de vários dias (ex.: CAF 10–31/01)
-    dataFim: z.coerce.date().optional(),
+    // opcional: ações de vários dias (ex.: CAF 10–31/01). O widget datetime do
+    // CMS grava `dataFim: ''` quando o campo fica em branco — tratar como ausente.
+    dataFim: z.preprocess((v) => (v === '' || v === null ? undefined : v), z.coerce.date().optional()),
     descricao: z.string(),
     cover: z.string(),
     galeria: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
-  }),
+  })
+    // formatRange (src/lib/acoes.ts) lança RangeError se o fim vier antes do início
+    .refine((a) => !a.dataFim || a.dataFim >= a.data, {
+      message: 'dataFim não pode ser anterior à data de início',
+      path: ['dataFim'],
+    }),
 });
 
 // Parcerias — editável no CMS
@@ -203,7 +209,7 @@ const site = defineCollection({
     email: z.string().email(),
     copyrightTexto: z.string(), // render: © {ano} {copyrightTexto}
     // URL do formulário de empréstimo da biblioteca (ex.: Google Forms) — opcional,
-    // fallback pra mailto:{email} em BaseLayout/biblioteca.astro se vazio
+    // fallback pra mailto:{email} em biblioteca.astro se vazio
     linkEmprestimoBiblioteca: z.union([z.string().url(), z.literal('')]).optional(),
     redes: z
       .array(

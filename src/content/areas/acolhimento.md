@@ -1,6 +1,6 @@
 ---
-nome: Acolhimento
-descricao: Recepção e suporte às calouras de engenharia, criando rede de apoio entre alunas.
+nome: Gestão
+descricao: Núcleo estratégico e administrativo do projeto Elas na Engenharia, responsável por planejar, coordenar, supervisionar e integrar o funcionamento geral do projeto.
 accentToken: purple
 ordem: 1
 ---

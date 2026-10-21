@@ -349,8 +349,13 @@ const livrosData = livros.map((livro) => ({
     const modalAutor = document.getElementById('livro-modal-autor');
     const modalMotivo = document.getElementById('livro-modal-motivo');
 
+    // Timer do fechamento animado — cancelado ao reabrir, senão o `hidden`
+    // atrasado esconde o modal recém-aberto (fechar + abrir em < 300ms).
+    let fecharTimer: number | undefined;
+
     function abrirModal(livro: Livro) {
       if (!modal || !painel || !backdrop) return;
+      window.clearTimeout(fecharTimer);
 
       if (modalCapa) {
         modalCapa.src = livro.capa;
@@ -379,7 +384,7 @@ const livrosData = livros.map((livro) => ({
       painel.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
       painel.classList.add('opacity-0', 'translate-y-4', 'scale-95');
 
-      window.setTimeout(() => {
+      fecharTimer = window.setTimeout(() => {
         modal.classList.add('hidden');
         document.body.style.overflow = '';
       }, 300);

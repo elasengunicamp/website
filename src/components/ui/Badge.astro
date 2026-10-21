@@ -10,13 +10,19 @@ const { accent = 'purple', class: className } = Astro.props;
 
 // Classes escritas por extenso (nunca `bg-accent-${accent}`) — Tailwind v4
 // só gera utilities que aparecem como string literal no código-fonte.
+//
+// O accent puro como cor de texto não passa contraste (blue/rose ~2.7:1 no
+// branco; pink/yellow ~1.1:1 no roxo escuro). Por isso o fundo continua sendo
+// o accent translúcido e o texto é um tom do mesmo matiz: escurecido no light,
+// clareado no dark. Contraste medido sobre o fundo composto, ≥ 4.9:1 em
+// white/brand-cream e ≥ 6.8:1 em brand-dark/brand-dark-surface (WCAG AA).
 const accentClasses = {
-  blue: 'bg-accent-blue/20 text-accent-blue',
-  teal: 'bg-accent-teal/20 text-accent-teal',
-  pink: 'bg-accent-pink/40 text-[#a24f68]',
-  purple: 'bg-accent-purple/20 text-accent-purple',
-  yellow: 'bg-accent-yellow/40 text-[#8a6d1f]',
-  rose: 'bg-accent-rose/20 text-accent-rose',
+  blue: 'bg-accent-blue/20 text-[#2c5a8c] dark:bg-accent-blue/25 dark:text-[#b4cdeb]',
+  teal: 'bg-accent-teal/20 text-[#0e5a5f] dark:bg-accent-teal/30 dark:text-[#86d3d8]',
+  pink: 'bg-accent-pink/50 text-[#8f3552] dark:bg-accent-pink/15 dark:text-accent-pink',
+  purple: 'bg-accent-purple/20 text-[#7a2d90] dark:bg-accent-purple/25 dark:text-[#e0b6ec]',
+  yellow: 'bg-accent-yellow/60 text-[#6b5212] dark:bg-accent-yellow/15 dark:text-accent-yellow',
+  rose: 'bg-accent-rose/20 text-[#9b2f47] dark:bg-accent-rose/25 dark:text-[#f3aebd]',
 } as const;
 ---
 

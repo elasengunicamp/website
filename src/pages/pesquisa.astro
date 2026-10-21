@@ -2,19 +2,17 @@
 // "Pesquisa/Review d'Elas" (NOTES.md) — formato blog, mas conteúdo separado do
 // blog de marketing: cards lidos como referência acadêmica/citação (autores,
 // veículo, DOI, data), não como post genérico. Cada card é "fixado" com um
-// pin lilás (public/graphics/icons/17.png — revisado, ver graphics-manifest.ts).
+// pin lilás (public/graphics/icons/17.png — revisado, ver graphics-manifest.ts);
+// card reto, sem inclinação — o pin é o único acento.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import StickerFrame from '../components/ui/StickerFrame.astro';
-import type { Tilt } from '../components/ui/StickerFrame.astro';
 import { formatarData } from '../lib/date';
 
 const indicacoes = (await getCollection('pesquisa')).sort(
   (a, b) => b.data.data.valueOf() - a.data.data.valueOf(),
 );
-
-const tilts: Tilt[] = [-2, 1, -1, 2];
 
 function formatarAutores(autores: string[]) {
   if (autores.length <= 1) return autores[0] ?? '';
@@ -53,7 +51,7 @@ function formatarAutores(autores: string[]) {
                 i % 2 === 0 ? 'left-7 -rotate-[8deg]' : 'right-9 rotate-[10deg]',
               ]}
             />
-            <StickerFrame tilt={tilts[i % tilts.length]} class="block w-full">
+            <StickerFrame class="block w-full">
               <a href={`/pesquisa/${entry.id}`} class="block p-6 sm:p-7">
                 <p class="font-mono text-xs tracking-wide text-accent-purple">{formatarData(data)}</p>
                 <h3 class="mt-2 font-heading text-lg font-bold leading-snug text-ink-heading dark:text-ink-dark-heading">

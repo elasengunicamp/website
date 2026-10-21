@@ -10,6 +10,13 @@ import Badge from '../../components/ui/Badge.astro';
 import { formatarData } from '../../lib/date';
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.data.valueOf() - a.data.data.valueOf());
+
+// Datas date-only viram meia-noite UTC — ano em UTC para não cair no ano anterior.
+const anoDe = (data: Date) => data.getUTCFullYear();
+const anos = [...new Set(posts.map((p) => anoDe(p.data.data)))].sort((a, b) => b - a);
+
+// Busca sem distinção de caixa/acento (mesma normalização no script).
+const normalizar = (texto: string) => texto.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 ---
 
 <BaseLayout title="Blog" description="Posts, entrevistas e bastidores do Elas na Engenharia.">
@@ -23,12 +30,65 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.data.valueOf()
       <p class="mt-12 font-body text-sm text-ink dark:text-ink-dark">Nenhum post publicado ainda.</p>
     )}
 
-    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    {posts.length > 0 && (
+      <div class="mt-8 flex flex-col gap-4 md:flex-row md:items-center">
+        {/* chips de ano só fazem sentido com mais de um ano */}
+        {anos.length > 1 && (
+          <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar posts por ano">
+            <button
+              type="button"
+              data-filtro-ano="todos"
+              aria-pressed="true"
+              class="rounded-full bg-brand px-4 py-2 font-body text-sm font-semibold text-brand-cream shadow-sticker transition-colors dark:bg-brand-lilac dark:text-brand-dark"
+            >
+              Todos
+            </button>
+            {anos.map((ano) => (
+              <button
+                type="button"
+                data-filtro-ano={String(ano)}
+                aria-pressed="false"
+                class="rounded-full border border-brand/15 bg-white px-4 py-2 font-body text-sm font-medium text-ink transition-colors hover:bg-brand-lilac/40 dark:border-brand-lilac/15 dark:bg-brand-dark-surface dark:text-ink-dark dark:hover:bg-brand-dark-surface/70"
+              >
+                {ano}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div class="relative w-full md:ml-auto md:w-80">
+          <svg
+            class="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/50 dark:text-ink-dark/50"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <input
+            type="search"
+            id="busca-post"
+            aria-label="Buscar posts"
+            placeholder="Buscar posts..."
+            class="w-full rounded-full border border-brand/15 bg-white py-2.5 pl-10 pr-4 font-body text-sm text-ink placeholder:text-ink/50 focus:outline-none focus:ring-2 focus:ring-brand/40 dark:border-brand-lilac/15 dark:bg-brand-dark-surface dark:text-ink-dark dark:placeholder:text-ink-dark/50"
+          />
+        </div>
+      </div>
+    )}
+
+    <div id="grade-posts" class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {posts.map((post, i) => {
         const { titulo, autor, cover, resumo, tags, data } = post.data;
         return (
           <a
             href={`/blog/${post.id}`}
+            data-post-card
+            data-busca={normalizar([titulo, resumo, autor, ...tags].join(' '))}
+            data-ano={String(anoDe(data))}
             class:list={[
               'block overflow-hidden rounded-2xl border border-brand/10 bg-white shadow-sticker transition-transform hover:-translate-y-0.5 dark:border-brand-lilac/10 dark:bg-brand-dark-surface',
               i % 2 === 0 ? '-rotate-1' : 'rotate-1',
@@ -65,5 +125,81 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.data.valueOf()
         );
       })}
     </div>
+
+    <div id="sem-resultados" class="mt-16 hidden flex-col items-center gap-3 text-center" role="status">
+      <p class="font-heading text-lg font-bold text-ink-heading dark:text-ink-dark-heading">
+        Nenhum post encontrado
+      </p>
+      <p class="font-body text-sm text-ink/70 dark:text-ink-dark/70">
+        Tente ajustar a busca ou o filtro de ano.
+      </p>
+    </div>
   </div>
+
+  <script>
+    // --- Busca + filtro por ano ---
+    const buscaInput = document.getElementById('busca-post') as HTMLInputElement | null;
+    const filtroBtns = document.querySelectorAll<HTMLButtonElement>('[data-filtro-ano]');
+    const cards = document.querySelectorAll<HTMLElement>('[data-post-card]');
+    const semResultados = document.getElementById('sem-resultados');
+    const grade = document.getElementById('grade-posts');
+
+    let anoAtivo = 'todos';
+
+    const ATIVO_CLASSES = [
+      'bg-brand',
+      'font-semibold',
+      'text-brand-cream',
+      'shadow-sticker',
+      'dark:bg-brand-lilac',
+      'dark:text-brand-dark',
+    ];
+    const INATIVO_CLASSES = [
+      'border',
+      'border-brand/15',
+      'bg-white',
+      'font-medium',
+      'text-ink',
+      'hover:bg-brand-lilac/40',
+      'dark:border-brand-lilac/15',
+      'dark:bg-brand-dark-surface',
+      'dark:text-ink-dark',
+      'dark:hover:bg-brand-dark-surface/70',
+    ];
+
+    // Mesma normalização do data-busca (sem caixa/acento).
+    const normalizar = (texto: string) => texto.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+
+    function aplicarFiltros() {
+      const termo = normalizar((buscaInput?.value ?? '').trim());
+      let visiveis = 0;
+
+      cards.forEach((card) => {
+        const combinaAno = anoAtivo === 'todos' || card.dataset.ano === anoAtivo;
+        const combinaBusca = !termo || (card.dataset.busca ?? '').includes(termo);
+        const visivel = combinaAno && combinaBusca;
+        card.hidden = !visivel;
+        if (visivel) visiveis++;
+      });
+
+      grade?.classList.toggle('hidden', visiveis === 0);
+      semResultados?.classList.toggle('hidden', visiveis !== 0);
+      semResultados?.classList.toggle('flex', visiveis === 0);
+    }
+
+    filtroBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        anoAtivo = btn.dataset.filtroAno ?? 'todos';
+        filtroBtns.forEach((b) => {
+          const ativo = b === btn;
+          b.setAttribute('aria-pressed', String(ativo));
+          b.classList.remove(...ATIVO_CLASSES, ...INATIVO_CLASSES);
+          b.classList.add(...(ativo ? ATIVO_CLASSES : INATIVO_CLASSES));
+        });
+        aplicarFiltros();
+      });
+    });
+
+    buscaInput?.addEventListener('input', aplicarFiltros);
+  </script>
 </BaseLayout>

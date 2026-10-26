@@ -90,22 +90,22 @@ const normalizar = (texto: string) => texto.normalize('NFD').replace(/\p{Diacrit
             data-busca={normalizar([titulo, resumo, autor, ...tags].join(' '))}
             data-ano={String(anoDe(data))}
             class:list={[
-              'block overflow-hidden rounded-2xl border border-brand/10 bg-white shadow-sticker transition-transform hover:-translate-y-0.5 dark:border-brand-lilac/10 dark:bg-brand-dark-surface',
+              'relative block rounded-2xl border border-brand/10 bg-white shadow-sticker transition-transform hover:-translate-y-0.5 dark:border-brand-lilac/10 dark:bg-brand-dark-surface',
               i % 2 === 0 ? '-rotate-1' : 'rotate-1',
               'hover:rotate-0',
             ]}
           >
-            <div class="relative h-40 overflow-hidden">
+            <div class="h-40 overflow-hidden rounded-t-2xl">
               <img src={cover} alt={titulo} class="h-full w-full object-cover" loading="lazy" />
-              {i === 0 && (
-                <img
-                  src="/graphics/textures/52.png"
-                  alt=""
-                  aria-hidden="true"
-                  class="pointer-events-none absolute -top-3 left-1/2 w-24 -translate-x-1/2 -rotate-3 opacity-95"
-                />
-              )}
             </div>
+            {i === 0 && (
+              <img
+                src="/graphics/textures/52.png"
+                alt=""
+                aria-hidden="true"
+                class="pointer-events-none absolute -top-4 left-1/2 w-28 -translate-x-1/2 -rotate-3 opacity-95"
+              />
+            )}
             <div class="p-5">
               {tags.length > 0 && (
                 <div class="mb-2 flex flex-wrap gap-1.5">

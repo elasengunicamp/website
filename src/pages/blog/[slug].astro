@@ -44,13 +44,13 @@ const { Content } = await render(post);
       <span>{formatarData(data, 'longa')}</span>
     </div>
 
-    <div class="relative mt-8 overflow-hidden rounded-sticker shadow-sticker">
-      <img src={cover} alt={titulo} class="h-72 w-full object-cover sm:h-96" />
+    <div class="relative mt-8 rounded-sticker shadow-sticker">
+      <img src={cover} alt={titulo} class="h-72 w-full rounded-sticker object-cover sm:h-96" />
       <img
         src="/graphics/textures/52.png"
         alt=""
         aria-hidden="true"
-        class="pointer-events-none absolute -top-4 left-12 w-28 -rotate-6 opacity-95"
+        class="pointer-events-none absolute -top-5 left-12 w-32 -rotate-6 opacity-95"
       />
     </div>
 
